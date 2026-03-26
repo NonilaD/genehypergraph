@@ -2,20 +2,42 @@
 % Please edit documentation in R/core_config.R
 \name{load_config}
 \alias{load_config}
-\title{Load pipeline configuration}
+\title{Cargar la configuración del pipeline}
 \usage{
-load_config(user_config = NULL)
+load_config(user_config = NULL, run_id = NULL, validate = TRUE)
 }
 \arguments{
-\item{user_config}{Path to user YAML config file. If NULL, uses package defaults.}
+\item{user_config}{Ruta al YAML del usuario. Si es \code{NULL} se usan solo los
+valores por defecto.}
+
+\item{run_id}{Identificador de la ejecución (cadena de texto). Si es \code{NULL}
+se genera automáticamente con la fecha y hora actuales
+(\code{"YYYYMMDD_HHMMSS"}).}
+
+\item{validate}{Lógico. Si \code{TRUE} (por defecto) valida las claves
+obligatorias y los rangos de los parámetros críticos.}
 }
 \value{
-A named list with the merged configuration.
+Lista nombrada con la configuración resultante. Incluye el campo
+\verb{$run_id} y las rutas de output con \code{{run_id}} ya resuelto.
 }
 \description{
-Load pipeline configuration
+Carga el YAML por defecto del paquete y, opcionalmente, lo fusiona con un
+YAML de usuario mediante merge recursivo: las claves del usuario prevalecen,
+pero las no especificadas conservan el valor por defecto.
+}
+\details{
+Las rutas de output que contienen \code{{run_id}} se resuelven en este paso.
+Los placeholders \code{{trait_id}}, \code{{trait_name}} y \code{{capa}} se resuelven
+después, por trait, mediante \code{\link[=resolve_trait_path]{resolve_trait_path()}}.
 }
 \examples{
 config <- load_config()
-config <- load_config("my_config.yaml")
+config <- load_config(run_id = "prueba_01", validate = FALSE)
+get_config(config, "propagacion.alpha")
+
+\dontrun{
+# Solo si el archivo existe en disco
+config <- load_config("mi_config.yaml")
+}
 }
