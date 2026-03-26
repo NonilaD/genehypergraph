@@ -1,0 +1,298 @@
+# =============================================================================
+# genehypergraph — configuración por defecto
+# =============================================================================
+
+# =============================================================================
+# 1. Metadatos
+# =============================================================================
+schema:
+  version: 1
+  descripcion: "Configuración por defecto del pipeline genehypergraph"
+
+# =============================================================================
+# 2. Ejecución y reproducibilidad
+# =============================================================================
+ejecucion:
+  semilla: 12345
+  guardar_manifest: true
+
+# =============================================================================
+# 3. Rutas
+# =============================================================================
+rutas:
+  inputs:
+    genes:        "inputs/genes"
+    interactoma:  "inputs/interactoma"
+    comun:        "inputs/comun"
+    rara:         "inputs/rara"
+    expresion:    "inputs/expresion"
+    enfermedades: "inputs/enfermedades"
+  outputs:
+    root:          "outputs"
+    global:        "outputs/{run_id}/global"
+    traits:        "outputs/{run_id}/traits/{trait_id}__{trait_name}"
+    visualizacion: "outputs/{run_id}/traits/{trait_id}__{trait_name}/06_visualizacion/{capa}"
+    logs:          "outputs/{run_id}/logs"
+    cache:         "outputs/cache"
+
+# =============================================================================
+# 4. Pipeline
+# =============================================================================
+pipeline:
+  network_genes:         true
+  network_interactome:   true
+  network_layers:        true
+  network_scoring:       true
+  analysis_propagation:  true
+  analysis_communities:  true
+  analysis_metrics:      true
+  analysis_integration:
+    activar: true
+    momento: "post_cluster"
+  analysis_ranking:      true
+  analysis_significance: true
+  analysis_latent:       false
+  analysis_hypergraph:   false
+  results_annotation:    false
+  results_visualization: true
+  results_export:        true
+
+# =============================================================================
+# 5. Capas
+# =============================================================================
+capas:
+  gwas_comun:
+    activar: true
+    peso:    1.0
+  gwas_rara:
+    activar: false
+    peso:    1.0
+  expresion:
+    activar: false
+    peso:    1.0
+
+# =============================================================================
+# 6. Filtros
+# =============================================================================
+filtros:
+  genes:
+    biotype: "protein_coding"
+
+  interactoma:
+    string_threshold:    0.75
+    eliminar_self_loops: true
+    eliminar_duplicados: true
+
+  gwas_comun:
+    score_min:           0.5
+    min_genes_por_trait: 2
+
+  gwas_rara:
+    score_min:           0.5
+    min_genes_por_trait: 2
+    clinicalSignificances_excluir:
+      - "benign"
+      - "likely benign"
+
+  expresion:
+    rna_level_min:       1
+    min_genes_por_trait: 2
+
+# =============================================================================
+# 7. Traits
+# =============================================================================
+traits:
+  usar_todos:          true
+  lista:               []
+  areas_terapeuticas:  []
+  excluir:             []
+
+# =============================================================================
+# 8. Propagación — PageRank con seeds ponderados por score
+# =============================================================================
+propagacion:
+  metodo:   "pagerank"
+  alpha:    0.15
+  max_iter: 100
+  tol:      1e-6
+
+# =============================================================================
+# 9. Comunidades
+# =============================================================================
+comunidades:
+  metodo:     "walktrap"   # walktrap | louvain | leiden
+  min_size:   5
+  usar_pesos: true
+
+  recluster:
+    activar:                   true
+    min_size_cluster_original: 30
+    min_size_subcluster:       5
+
+# =============================================================================
+# 10. Métricas de red
+# =============================================================================
+metricas_red:
+  degree:      true
+  coreness:    true
+  closeness:   false
+  betweenness: false
+  hub_score:   true
+  strength:    true
+
+# =============================================================================
+# 11. Integración multicapa
+# =============================================================================
+integracion:
+  normalizacion: "minmax"   # minmax | zscore
+  agregacion:    "mean"     # mean | median | max
+  usar_pesos:    true       # usa los pesos definidos en capas
+
+# =============================================================================
+# 12. Ranking
+# =============================================================================
+ranking:
+  top_pct_genes: 0.25   # top 25% genes por trait
+  min_score:     0.1
+
+# =============================================================================
+# 13. Significancia
+# =============================================================================
+significancia:
+  n_permutaciones:    1000
+  ajuste_p:           "BH"
+  jaccard:            true
+  null_model:         "permute_scores"   # permute_scores | permute_labels
+  min_size_comunidad: 5
+
+# =============================================================================
+# 14. Vecinos latentes
+# =============================================================================
+latent:
+  metodo:       "umap"   # umap | tsne
+  n_neighbors:  15       # cuántos vecinos considera para el espacio latente
+  min_dist:     0.1      # qué tan juntos pueden estar los puntos
+  n_components: 2        # dimensiones del espacio reducido (2D para visualizar)
+
+# =============================================================================
+# 15. Hipergrafos
+# =============================================================================
+hypergraph:
+  activar:               false
+  min_genes_compartidos: 2     # mínimo genes en común para crear hiperarista
+  conectar_traits:       true  # conecta clusters de distintos traits
+  conectar_capas:        true  # conecta clusters de distintas capas
+  min_size_cluster:      5
+
+# =============================================================================
+# 16. Anotación
+# =============================================================================
+anotacion:
+  activar: true   # requiere paquetes Bioconductor
+
+  enfermedades:
+    nombre:           true   # EFO_0001645 → "Alzheimer disease"
+    area_terapeutica: true   # mapea traits a áreas terapéuticas
+
+  funcional:
+    go:        true
+    kegg:      true
+    reactome:  true
+    min_genes: 5
+
+# =============================================================================
+# 17. Visualización
+# =============================================================================
+visualizacion:
+  activar: true
+  formatos:
+    png:  true
+    html: false   # interactivo — más pesado
+
+  carpetas:
+    por_capa:            true   # subcarpeta por cada capa activa en 06_visualizacion/
+    incluir_integracion: true   # integracion/ como carpeta extra al mismo nivel
+    # Estructura resultante:
+    #   06_visualizacion/
+    #   ├── gwas_comun/
+    #   ├── gwas_rara/      ← solo si capa activa
+    #   ├── expresion/      ← solo si capa activa
+    #   └── integracion/
+
+  plots:
+    # — Por capa (se generan dentro de la carpeta de cada capa) —
+    red_completa:   false   # costoso — off por defecto
+    comunidades:    true
+    ranking_genes:  true
+    significancia:  true
+    manhattan:      true
+    # — Integración multicapa (se genera en integracion/) —
+    integracion:    true
+    # — Opcionales (requieren módulos desactivados por defecto) —
+    latentes:       false   # requiere analysis_latent activo
+    hypergraph:     false   # requiere analysis_hypergraph activo
+
+# =============================================================================
+# 18. Export
+# =============================================================================
+export:
+  formatos:
+    parquet: true
+    excel:   true
+    tsv:     false
+
+  tablas:
+    genes_ranking:  true
+    comunidades:    true
+    significancia:  true
+    metricas_red:   true
+    anotacion:      true
+    hypergraph:     true
+    resumen_global: true
+
+  plots:
+    # — Por capa —
+    red_completa:   false
+    comunidades:    true
+    ranking_genes:  true
+    significancia:  true
+    manhattan:      true
+    # — Integración multicapa —
+    integracion:    true
+    # — Opcionales —
+    latentes:       false   # requiere analysis_latent activo
+    hypergraph:     false   # requiere analysis_hypergraph activo
+
+# =============================================================================
+# 19. Caché
+# =============================================================================
+cache:
+  activar: true
+  formato: "qs2"    # qs2 | rds
+  modo:    "hash"   # hash | timestamp
+
+# =============================================================================
+# 20. Rendimiento
+# =============================================================================
+rendimiento:
+  ram_max_gb:     16
+  gc_entre_pasos: true
+
+  paralelo:
+    activar: false
+    workers: "auto"
+
+# =============================================================================
+# 21. Errores
+# =============================================================================
+errores:
+  politica: "continuar_trait"   # parar | continuar_trait | continuar_run
+
+# =============================================================================
+# 22. Logging
+# =============================================================================
+logging:
+  nivel:           "INFO"   # DEBUG | INFO | WARN | ERROR
+  guardar_archivo: true
+  archivo:         "pipeline.log"
+  progreso:        true     # barra de progreso por trait

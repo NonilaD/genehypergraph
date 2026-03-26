@@ -11,14 +11,16 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-Imports: 
+Imports:
+    cli,
     data.table,
     duckdb,
     glue,
     igraph,
     yaml
-Suggests: 
+Suggests:
     knitr,
+    qs2,
     testthat
 URL: https://github.com/NonilaD/genehypergraph
 BugReports: https://github.com/NonilaD/genehypergraph/issues
