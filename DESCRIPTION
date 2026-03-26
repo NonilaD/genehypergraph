@@ -20,3 +20,5 @@ Imports:
 Suggests: 
     knitr,
     testthat
+URL: https://github.com/NonilaD/genehypergraph
+BugReports: https://github.com/NonilaD/genehypergraph/issues
