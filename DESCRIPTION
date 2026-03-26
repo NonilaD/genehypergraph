@@ -1,0 +1,22 @@
+Package: genehypergraph
+Title: Construction and Analysis of Gene Interaction Graphs and
+    Hypergraphs
+Version: 0.0.0.9000
+Authors@R: 
+    person("Nonila", "Dueso Estévez", , "211959574+NonilaD@users.noreply.github.com", role = c("aut", "cre"))
+Description: Tools for building multi-layer graphs and hypergraphs from
+    human protein-coding genes using genomic, transcriptomic and genetic
+    association data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    data.table,
+    duckdb,
+    glue,
+    igraph,
+    yaml
+Suggests: 
+    knitr,
+    testthat
