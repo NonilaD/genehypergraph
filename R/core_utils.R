@@ -122,9 +122,10 @@ gh_warn <- function(msg) {
 #' gh_footer(n_ok = 843, n_total = 844, tiempo_total = 8040)
 gh_footer <- function(n_ok, n_total, tiempo_total) {
   n_err <- n_total - n_ok
+  t_str <- .fmt_tiempo(tiempo_total)
   cli::cli_rule()
   cli::cli_text(
-    "  {cli::style_bold('Completado')} en {.fmt_tiempo(tiempo_total)}  |  ",
+    "  {cli::style_bold('Completado')} en {t_str}  |  ",
     "{cli::col_green(n_ok)}/{n_total} traits  |  ",
     "{cli::col_red(n_err)} error{if (n_err != 1) 's' else ''}"
   )
@@ -251,11 +252,9 @@ gh_log <- function(config, nivel, ...) {
 
   # Archivo
   if (isTRUE(config$logging$guardar_archivo)) {
-    log_path <- file.path(
-      get_config(config, "rutas.outputs.logs"),
-      config$logging$archivo
-    )
-    if (!is.null(log_path) && nzchar(log_path)) {
+    log_dir  <- get_config(config, "rutas.outputs.logs")
+    log_path <- file.path(log_dir, config$logging$archivo)
+    if (!is.null(log_dir) && nzchar(log_dir) && dir.exists(log_dir)) {
       cat(linea, "\n", file = log_path, append = TRUE)
     }
   }

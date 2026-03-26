@@ -22,9 +22,11 @@ valida para \code{key}, la devuelve directamente. Si no, evalua \code{expr}, gua
 el resultado y lo devuelve.
 }
 \examples{
+\dontrun{
 config <- load_config()
 key <- cache_key("suma_ejemplo", 1L, 2L)
 resultado <- cache_or_compute(config, key, {
   1L + 2L
 })
+}
 }

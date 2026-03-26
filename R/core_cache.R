@@ -21,7 +21,7 @@
 # Leer un objeto desde cache (qs2 o rds)
 .cache_read <- function(path, formato) {
   if (formato == "qs2") {
-    qs2::qread(path)
+    qs2::qs_read(path)
   } else {
     readRDS(path)
   }
@@ -31,7 +31,7 @@
 .cache_write <- function(object, path, formato) {
   ensure_dir(dirname(path))
   if (formato == "qs2") {
-    qs2::qsave(object, path)
+    qs2::qs_save(object, path)
   } else {
     saveRDS(object, path)
   }
@@ -161,11 +161,13 @@ cache_set <- function(config, key, object) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' config <- load_config()
 #' key <- cache_key("suma_ejemplo", 1L, 2L)
 #' resultado <- cache_or_compute(config, key, {
 #'   1L + 2L
 #' })
+#' }
 cache_or_compute <- function(config, key, expr) {
   cached <- cache_get(config, key)
   if (!is.null(cached)) return(cached)
