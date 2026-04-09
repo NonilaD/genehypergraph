@@ -1,16 +1,16 @@
 # ============================================================
-#  CAPA 2 — DATA  |  data_validate.R
-#  Validacion de tipos, rangos, NAs e integridad entre datasets
+#  LAYER 2 — DATA  |  data_validate.R
+#  Type, range, NA and cross-dataset integrity validation
 # ============================================================
 
-# ── helpers internos ──────────────────────────────────────────
+# ── internal helpers ──────────────────────────────────────────
 
 #' @noRd
 .vcols <- function(config, dt, required, dataset) {
   missing <- setdiff(required, names(dt))
   if (length(missing) > 0L) {
     stop(sprintf(
-      "[%s] Columnas requeridas no encontradas: %s",
+      "[%s] Required columns not found: %s",
       dataset, paste(missing, collapse = ", ")
     ))
   }
@@ -21,7 +21,7 @@
 .vna <- function(dt, col, dataset) {
   n <- sum(is.na(dt[[col]]))
   if (n > 0L) {
-    gh_warn(sprintf("[%s] %d NAs en columna clave '%s'", dataset, n, col))
+    gh_warn(sprintf("[%s] %d NAs in key column '%s'", dataset, n, col))
   }
   invisible(n)
 }
@@ -31,7 +31,7 @@
   n_bad <- sum(!grepl(pattern, dt[[col]], perl = TRUE), na.rm = TRUE)
   if (n_bad > 0L) {
     gh_warn(sprintf(
-      "[%s] %d valores en '%s' no coinciden con patron esperado",
+      "[%s] %d values in '%s' do not match expected pattern",
       dataset, n_bad, col
     ))
   }
@@ -44,23 +44,28 @@
   n_bad <- sum(vals < min_val | vals > max_val, na.rm = TRUE)
   if (n_bad > 0L) {
     gh_warn(sprintf(
-      "[%s] %d valores en '%s' fuera del rango [%s, %s]",
+      "[%s] %d values in '%s' outside range [%s, %s]",
       dataset, n_bad, col, min_val, max_val
     ))
   }
   invisible(n_bad)
 }
 
-# ── funciones publicas ────────────────────────────────────────
+# ── public functions ──────────────────────────────────────────
 
-#' Validar dataset de genes
+#' Validate gene dataset
 #'
-#' Comprueba columnas, patron Ensembl, biotipos y duplicados.
+#' \[EN\] Checks columns, Ensembl pattern, biotypes and duplicates.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt `data.table` devuelto por [read_genes()].
+#' \[ESP\] Comprueba columnas, patron Ensembl, biotipos y duplicados.
 #'
-#' @return `dt` sin modificaciones (los problemas se registran via log).
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] `data.table` returned by [read_genes()].\cr
+#'   \[ESP\] `data.table` devuelto por [read_genes()].
+#'
+#' @return \[EN\] `dt` unmodified (issues are logged via log).\cr
+#'   \[ESP\] `dt` sin modificaciones (los problemas se registran via log).
 #'
 #' @export
 #' @importFrom data.table uniqueN
@@ -74,31 +79,36 @@ validate_genes <- function(config, dt) {
   required <- c("id", "approvedSymbol", "biotype", "approvedName", "genomicLocation")
   .vcols(config, dt, required, "genes")
 
-  .vna(dt, "id",            "genes")
-  .vna(dt, "approvedSymbol","genes")
+  .vna(dt, "id",             "genes")
+  .vna(dt, "approvedSymbol", "genes")
   .vpattern(dt, "id", "^ENSG\\d+", "genes")
 
   n_dup <- nrow(dt) - data.table::uniqueN(dt[["id"]])
   if (n_dup > 0L) {
-    gh_warn(sprintf("[genes] %d IDs duplicados", n_dup))
+    gh_warn(sprintf("[genes] %d duplicate IDs", n_dup))
   }
 
   n_pc <- sum(dt[["biotype"]] == "protein_coding", na.rm = TRUE)
   gh_log(config, "INFO", sprintf(
-    "[genes] %d filas | %d protein_coding | %d IDs unicos",
+    "[genes] %d rows | %d protein_coding | %d unique IDs",
     nrow(dt), n_pc, data.table::uniqueN(dt[["id"]])
   ))
   dt
 }
 
-#' Validar dataset de interactoma
+#' Validate interactome dataset
 #'
-#' Comprueba columnas, patron Ensembl en targetA/B y rango del score.
+#' \[EN\] Checks columns, Ensembl pattern in targetA/B and score range.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt `data.table` devuelto por [read_interactoma()].
+#' \[ESP\] Comprueba columnas, patron Ensembl en targetA/B y rango del score.
 #'
-#' @return `dt` sin modificaciones.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] `data.table` returned by [read_interactome()].\cr
+#'   \[ESP\] `data.table` devuelto por [read_interactome()].
+#'
+#' @return \[EN\] `dt` unmodified.\cr
+#'   \[ESP\] `dt` sin modificaciones.
 #'
 #' @export
 #' @importFrom data.table uniqueN
@@ -106,9 +116,9 @@ validate_genes <- function(config, dt) {
 #' @examples
 #' \dontrun{
 #' config <- load_config()
-#' ppi    <- validate_interactoma(config, read_interactoma(config))
+#' ppi    <- validate_interactome(config, read_interactome(config))
 #' }
-validate_interactoma <- function(config, dt) {
+validate_interactome <- function(config, dt) {
   required <- c("sourceDatabase", "targetA", "intA", "targetB", "intB", "count", "scoring")
   .vcols(config, dt, required, "interactoma")
 
@@ -120,21 +130,27 @@ validate_interactoma <- function(config, dt) {
 
   n_genes <- data.table::uniqueN(c(dt[["targetA"]], dt[["targetB"]]))
   gh_log(config, "INFO", sprintf(
-    "[interactoma] %d interacciones | %d genes unicos | fuentes: %s",
+    "[interactoma] %d interactions | %d unique genes | sources: %s",
     nrow(dt), n_genes,
     paste(unique(dt[["sourceDatabase"]]), collapse = ", ")
   ))
   dt
 }
 
-#' Validar dataset GWAS variantes comunes
+#' Validate common variant GWAS dataset
 #'
-#' Comprueba columnas, patron Ensembl, rango de score y cobertura de enfermedades.
+#' \[EN\] Checks columns, Ensembl pattern, score range and disease coverage.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt `data.table` devuelto por [read_gwas_common()].
+#' \[ESP\] Comprueba columnas, patron Ensembl, rango de score y cobertura de
+#' enfermedades.
 #'
-#' @return `dt` sin modificaciones.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] `data.table` returned by [read_gwas_common()].\cr
+#'   \[ESP\] `data.table` devuelto por [read_gwas_common()].
+#'
+#' @return \[EN\] `dt` unmodified.\cr
+#'   \[ESP\] `dt` sin modificaciones.
 #'
 #' @export
 #' @importFrom data.table uniqueN
@@ -157,7 +173,7 @@ validate_gwas_common <- function(config, dt) {
   .vrange(dt, "score", 0, 1, "gwas_comun")
 
   gh_log(config, "INFO", sprintf(
-    "[gwas_comun] %d asociaciones | %d genes | %d enfermedades | fuentes: %s",
+    "[gwas_comun] %d associations | %d genes | %d diseases | sources: %s",
     nrow(dt),
     data.table::uniqueN(dt[["targetId"]]),
     data.table::uniqueN(dt[["diseaseId"]]),
@@ -166,14 +182,21 @@ validate_gwas_common <- function(config, dt) {
   dt
 }
 
-#' Validar dataset GWAS variantes raras
+#' Validate rare variant GWAS dataset
 #'
-#' Comprueba columnas, patron Ensembl, rango de score y significancia clinica.
+#' \[EN\] Checks columns, Ensembl pattern, score range and clinical
+#' significance.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt `data.table` devuelto por [read_gwas_rare()].
+#' \[ESP\] Comprueba columnas, patron Ensembl, rango de score y significancia
+#' clinica.
 #'
-#' @return `dt` sin modificaciones.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] `data.table` returned by [read_gwas_rare()].\cr
+#'   \[ESP\] `data.table` devuelto por [read_gwas_rare()].
+#'
+#' @return \[EN\] `dt` unmodified.\cr
+#'   \[ESP\] `dt` sin modificaciones.
 #'
 #' @export
 #' @importFrom data.table uniqueN
@@ -196,7 +219,7 @@ validate_gwas_rare <- function(config, dt) {
   .vrange(dt, "score", 0, 1, "gwas_rara")
 
   gh_log(config, "INFO", sprintf(
-    "[gwas_rara] %d asociaciones | %d genes | %d enfermedades | fuentes: %s",
+    "[gwas_rara] %d associations | %d genes | %d diseases | sources: %s",
     nrow(dt),
     data.table::uniqueN(dt[["targetId"]]),
     data.table::uniqueN(dt[["diseaseId"]]),
@@ -205,14 +228,20 @@ validate_gwas_rare <- function(config, dt) {
   dt
 }
 
-#' Validar dataset de expresion genica
+#' Validate gene expression dataset
 #'
-#' Comprueba columnas, patron Ensembl, valores de rna_value y rna_level.
+#' \[EN\] Checks columns, Ensembl pattern, rna_value values and rna_level.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt `data.table` devuelto por [read_expression()].
+#' \[ESP\] Comprueba columnas, patron Ensembl, valores de rna_value y
+#' rna_level.
 #'
-#' @return `dt` sin modificaciones.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] `data.table` returned by [read_expression()].\cr
+#'   \[ESP\] `data.table` devuelto por [read_expression()].
+#'
+#' @return \[EN\] `dt` unmodified.\cr
+#'   \[ESP\] `dt` sin modificaciones.
 #'
 #' @export
 #' @importFrom data.table uniqueN
@@ -232,19 +261,19 @@ validate_expression <- function(config, dt) {
 
   n_neg <- sum(dt[["rna_value"]] < 0, na.rm = TRUE)
   if (n_neg > 0L) {
-    gh_warn(sprintf("[expresion] %d valores de rna_value negativos", n_neg))
+    gh_warn(sprintf("[expresion] %d negative rna_value values", n_neg))
   }
 
   valid_levels <- c(-1L, 0L, 1L, 2L, 3L)
   n_bad_lvl <- sum(!dt[["rna_level"]] %in% valid_levels, na.rm = TRUE)
   if (n_bad_lvl > 0L) {
     gh_warn(sprintf(
-      "[expresion] %d valores de rna_level fuera del rango esperado [-1, 3]", n_bad_lvl
+      "[expresion] %d rna_level values outside expected range [-1, 3]", n_bad_lvl
     ))
   }
 
   gh_log(config, "INFO", sprintf(
-    "[expresion] %d filas | %d genes | %d tejidos",
+    "[expresion] %d rows | %d genes | %d tissues",
     nrow(dt),
     data.table::uniqueN(dt[["id"]]),
     data.table::uniqueN(dt[["efo_code"]])
@@ -252,14 +281,19 @@ validate_expression <- function(config, dt) {
   dt
 }
 
-#' Validar ontologia de enfermedades
+#' Validate disease ontology
 #'
-#' Comprueba columnas y que id y name no tengan NAs.
+#' \[EN\] Checks columns and that id and name have no NAs.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt `data.table` devuelto por [read_diseases()].
+#' \[ESP\] Comprueba columnas y que id y name no tengan NAs.
 #'
-#' @return `dt` sin modificaciones.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] `data.table` returned by [read_diseases()].\cr
+#'   \[ESP\] `data.table` devuelto por [read_diseases()].
+#'
+#' @return \[EN\] `dt` unmodified.\cr
+#'   \[ESP\] `dt` sin modificaciones.
 #'
 #' @export
 #'
@@ -276,26 +310,38 @@ validate_diseases <- function(config, dt) {
   .vna(dt, "name", "enfermedades")
 
   gh_log(config, "INFO", sprintf(
-    "[enfermedades] %d terminos ontologicos", nrow(dt)
+    "[enfermedades] %d ontology terms", nrow(dt)
   ))
   dt
 }
 
-#' Validar integridad cruzada entre datasets
+#' Validate cross-dataset integrity
 #'
-#' Comprueba la cobertura entre datasets: genes en interactoma,
-#' genes GWAS en lista de genes, enfermedades GWAS en ontologia,
-#' y genes de expresion en lista de genes.
+#' \[EN\] Checks coverage between datasets: genes in interactome, GWAS genes in
+#' the gene list, GWAS diseases in the ontology, and expression genes in the
+#' gene list.
 #'
-#' @param config    Lista de configuracion creada por [load_config()].
-#' @param genes     `data.table` de genes validado.
-#' @param interactoma `data.table` de interactoma validado.
-#' @param gwas_comun  `data.table` GWAS comun validado.
-#' @param gwas_rara   `data.table` GWAS raro validado.
-#' @param expresion   `data.table` de expresion validado.
-#' @param enfermedades `data.table` de enfermedades validado.
+#' \[ESP\] Comprueba la cobertura entre datasets: genes en interactoma, genes
+#' GWAS en lista de genes, enfermedades GWAS en ontologia, y genes de expresion
+#' en lista de genes.
 #'
-#' @return Lista con porcentajes de cobertura entre datasets.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param genes \[EN\] Validated gene `data.table`.\cr
+#'   \[ESP\] `data.table` de genes validado.
+#' @param interactome \[EN\] Validated interactome `data.table`.\cr
+#'   \[ESP\] `data.table` de interactoma validado.
+#' @param gwas_common \[EN\] Validated common GWAS `data.table`.\cr
+#'   \[ESP\] `data.table` GWAS comun validado.
+#' @param gwas_rare \[EN\] Validated rare GWAS `data.table`.\cr
+#'   \[ESP\] `data.table` GWAS raro validado.
+#' @param expression \[EN\] Validated expression `data.table`.\cr
+#'   \[ESP\] `data.table` de expresion validado.
+#' @param diseases \[EN\] Validated disease `data.table`.\cr
+#'   \[ESP\] `data.table` de enfermedades validado.
+#'
+#' @return \[EN\] List with coverage percentages between datasets.\cr
+#'   \[ESP\] Lista con porcentajes de cobertura entre datasets.
 #'
 #' @export
 #'
@@ -304,48 +350,48 @@ validate_diseases <- function(config, dt) {
 #' config <- load_config()
 #' cov    <- validate_cross(
 #'   config,
-#'   read_genes(config),        read_interactoma(config),
+#'   read_genes(config),        read_interactome(config),
 #'   read_gwas_common(config),  read_gwas_rare(config),
 #'   read_expression(config),   read_diseases(config)
 #' )
 #' }
-validate_cross <- function(config, genes, interactoma,
-                           gwas_comun, gwas_rara, expresion, enfermedades) {
+validate_cross <- function(config, genes, interactome,
+                           gwas_common, gwas_rare, expression, diseases) {
   gene_ids    <- genes[["id"]]
-  disease_ids <- enfermedades[["id"]]
+  disease_ids <- diseases[["id"]]
 
-  # Genes en interactoma
-  ppi_genes <- unique(c(interactoma[["targetA"]], interactoma[["targetB"]]))
+  # Genes in interactome
+  ppi_genes <- unique(c(interactome[["targetA"]], interactome[["targetB"]]))
   cov_ppi   <- round(100 * sum(gene_ids %in% ppi_genes) / length(gene_ids), 1)
 
-  # GWAS comun: genes y enfermedades en referencia
+  # Common GWAS: genes and diseases against reference
   cov_gwas_c_genes <- round(
-    100 * sum(unique(gwas_comun[["targetId"]]) %in% gene_ids) /
-      data.table::uniqueN(gwas_comun[["targetId"]]), 1
+    100 * sum(unique(gwas_common[["targetId"]]) %in% gene_ids) /
+      data.table::uniqueN(gwas_common[["targetId"]]), 1
   )
   cov_gwas_c_dis   <- round(
-    100 * sum(unique(gwas_comun[["diseaseId"]]) %in% disease_ids) /
-      data.table::uniqueN(gwas_comun[["diseaseId"]]), 1
+    100 * sum(unique(gwas_common[["diseaseId"]]) %in% disease_ids) /
+      data.table::uniqueN(gwas_common[["diseaseId"]]), 1
   )
 
-  # GWAS rara: genes y enfermedades en referencia
+  # Rare GWAS: genes and diseases against reference
   cov_gwas_r_genes <- round(
-    100 * sum(unique(gwas_rara[["targetId"]]) %in% gene_ids) /
-      data.table::uniqueN(gwas_rara[["targetId"]]), 1
+    100 * sum(unique(gwas_rare[["targetId"]]) %in% gene_ids) /
+      data.table::uniqueN(gwas_rare[["targetId"]]), 1
   )
   cov_gwas_r_dis   <- round(
-    100 * sum(unique(gwas_rara[["diseaseId"]]) %in% disease_ids) /
-      data.table::uniqueN(gwas_rara[["diseaseId"]]), 1
+    100 * sum(unique(gwas_rare[["diseaseId"]]) %in% disease_ids) /
+      data.table::uniqueN(gwas_rare[["diseaseId"]]), 1
   )
 
-  # Expresion: genes en referencia
+  # Expression: genes against reference
   cov_expr <- round(
-    100 * sum(unique(expresion[["id"]]) %in% gene_ids) /
-      data.table::uniqueN(expresion[["id"]]), 1
+    100 * sum(unique(expression[["id"]]) %in% gene_ids) /
+      data.table::uniqueN(expression[["id"]]), 1
   )
 
   gh_log(config, "INFO", sprintf(
-    "[cross] cobertura genes en PPI: %s%% | GWAS-comun genes: %s%% dis: %s%% | GWAS-rara genes: %s%% dis: %s%% | expresion: %s%%",
+    "[cross] gene coverage in PPI: %s%% | GWAS-common genes: %s%% dis: %s%% | GWAS-rare genes: %s%% dis: %s%% | expression: %s%%",
     cov_ppi, cov_gwas_c_genes, cov_gwas_c_dis,
     cov_gwas_r_genes, cov_gwas_r_dis, cov_expr
   ))

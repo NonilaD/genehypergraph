@@ -1,9 +1,9 @@
 # ============================================================
-#  CAPA 2 — DATA  |  data_io.R
-#  Lectura de Parquet via DuckDB con seleccion de columnas
+#  LAYER 2 — DATA  |  data_io.R
+#  Parquet reading via DuckDB with column pushdown
 # ============================================================
 
-# ── helpers internos ──────────────────────────────────────────
+# ── internal helpers ──────────────────────────────────────────
 
 #' @noRd
 .duckdb_con <- function() {
@@ -18,16 +18,22 @@
   data.table::as.data.table(DBI::dbGetQuery(con, query))
 }
 
-# ── funciones publicas ────────────────────────────────────────
+# ── public functions ──────────────────────────────────────────
 
-#' Leer genes protein-coding desde Parquet
+#' Read protein-coding genes from Parquet
 #'
-#' Lee el dataset de genes de Open Targets Target y devuelve
-#' un subconjunto de columnas esenciales como `data.table`.
+#' \[EN\] Reads the Open Targets Target gene dataset and returns a subset of
+#' essential columns as a `data.table`.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
+#' \[ESP\] Lee el dataset de genes de Open Targets Target y devuelve un
+#' subconjunto de columnas esenciales como `data.table`.
 #'
-#' @return `data.table` con columnas:
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#'
+#' @return \[EN\] `data.table` with columns:
+#'   `id`, `approvedSymbol`, `biotype`, `approvedName`, `genomicLocation`.\cr
+#'   \[ESP\] `data.table` con columnas:
 #'   `id`, `approvedSymbol`, `biotype`, `approvedName`, `genomicLocation`.
 #'
 #' @export
@@ -51,15 +57,23 @@ read_genes <- function(config) {
   })
 }
 
-#' Leer interactoma proteina-proteina desde Parquet
+#' Read protein-protein interactome from Parquet
 #'
-#' Lee el dataset de interacciones PPI (IntAct, STRING, etc.)
-#' y devuelve las columnas clave como `data.table`.
+#' \[EN\] Reads the PPI interaction dataset (IntAct, STRING, etc.) and returns
+#' the key columns as a `data.table`.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
+#' \[ESP\] Lee el dataset de interacciones PPI (IntAct, STRING, etc.) y
+#' devuelve las columnas clave como `data.table`.
 #'
-#' @return `data.table` con columnas:
-#'   `sourceDatabase`, `targetA`, `intA`, `targetB`, `intB`, `count`, `scoring`.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#'
+#' @return \[EN\] `data.table` with columns:
+#'   `sourceDatabase`, `targetA`, `intA`, `targetB`, `intB`, `count`,
+#'   `scoring`.\cr
+#'   \[ESP\] `data.table` con columnas:
+#'   `sourceDatabase`, `targetA`, `intA`, `targetB`, `intB`, `count`,
+#'   `scoring`.
 #'
 #' @export
 #' @importFrom DBI dbConnect dbDisconnect dbGetQuery
@@ -69,9 +83,9 @@ read_genes <- function(config) {
 #' @examples
 #' \dontrun{
 #' config <- load_config()
-#' ppi    <- read_interactoma(config)
+#' ppi    <- read_interactome(config)
 #' }
-read_interactoma <- function(config) {
+read_interactome <- function(config) {
   path <- get_config(config, "rutas.inputs.interactoma")
   cache_or_compute(config, cache_key("interactoma", path), {
     con <- .duckdb_con()
@@ -83,14 +97,23 @@ read_interactoma <- function(config) {
   })
 }
 
-#' Leer asociaciones GWAS de variantes comunes desde Parquet
+#' Read common variant GWAS associations from Parquet
 #'
-#' Lee los credible sets de GWAS (Open Targets) y devuelve
-#' las columnas de asociacion gen-enfermedad como `data.table`.
+#' \[EN\] Reads the GWAS credible sets (Open Targets) and returns the
+#' gene-disease association columns as a `data.table`.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
+#' \[ESP\] Lee los credible sets de GWAS (Open Targets) y devuelve las columnas
+#' de asociacion gen-enfermedad como `data.table`.
 #'
-#' @return `data.table` con columnas de asociacion GWAS:
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#'
+#' @return \[EN\] `data.table` with GWAS association columns:
+#'   `datasourceId`, `targetId`, `diseaseId`, `diseaseFromSource`,
+#'   `score`, `pValueExponent`, `pValueMantissa`, `beta`, `oddsRatio`,
+#'   `variantId`, `variantRsId`, `studyId`, `studyLocusId`,
+#'   `datatypeId`, `resourceScore`, `directionOnTrait`.\cr
+#'   \[ESP\] `data.table` con columnas de asociacion GWAS:
 #'   `datasourceId`, `targetId`, `diseaseId`, `diseaseFromSource`,
 #'   `score`, `pValueExponent`, `pValueMantissa`, `beta`, `oddsRatio`,
 #'   `variantId`, `variantRsId`, `studyId`, `studyLocusId`,
@@ -123,14 +146,23 @@ read_gwas_common <- function(config) {
   })
 }
 
-#' Leer asociaciones GWAS de variantes raras desde Parquet
+#' Read rare variant GWAS associations from Parquet
 #'
-#' Lee los datos de variantes raras (EVA, ClinVar) de Open Targets
-#' y devuelve las columnas de asociacion gen-enfermedad como `data.table`.
+#' \[EN\] Reads the rare variant data (EVA, ClinVar) from Open Targets and
+#' returns the gene-disease association columns as a `data.table`.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
+#' \[ESP\] Lee los datos de variantes raras (EVA, ClinVar) de Open Targets y
+#' devuelve las columnas de asociacion gen-enfermedad como `data.table`.
 #'
-#' @return `data.table` con columnas:
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#'
+#' @return \[EN\] `data.table` with columns:
+#'   `datasourceId`, `targetId`, `diseaseId`, `diseaseFromSource`,
+#'   `score`, `clinicalSignificances`, `variantId`, `variantRsId`,
+#'   `variantFromSourceId`, `variantFunctionalConsequenceId`,
+#'   `alleleOrigins`, `datatypeId`, `confidence`, `directionOnTrait`.\cr
+#'   \[ESP\] `data.table` con columnas:
 #'   `datasourceId`, `targetId`, `diseaseId`, `diseaseFromSource`,
 #'   `score`, `clinicalSignificances`, `variantId`, `variantRsId`,
 #'   `variantFromSourceId`, `variantFunctionalConsequenceId`,
@@ -163,14 +195,22 @@ read_gwas_rare <- function(config) {
   })
 }
 
-#' Leer datos de expresion genica por tejido desde Parquet
+#' Read tissue gene expression data from Parquet
 #'
-#' Lee el dataset de expresion (GTEx / HPA) de Open Targets
-#' y devuelve todas las columnas como `data.table`.
+#' \[EN\] Reads the expression dataset (GTEx / HPA) from Open Targets and
+#' returns all columns as a `data.table`.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
+#' \[ESP\] Lee el dataset de expresion (GTEx / HPA) de Open Targets y devuelve
+#' todas las columnas como `data.table`.
 #'
-#' @return `data.table` con columnas:
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#'
+#' @return \[EN\] `data.table` with columns:
+#'   `id`, `efo_code`, `label`, `rna_value`, `rna_zscore`, `rna_level`,
+#'   `rna_unit`, `organs`, `anatomical_systems`, `protein_level`,
+#'   `protein_reliability`.\cr
+#'   \[ESP\] `data.table` con columnas:
 #'   `id`, `efo_code`, `label`, `rna_value`, `rna_zscore`, `rna_level`,
 #'   `rna_unit`, `organs`, `anatomical_systems`, `protein_level`,
 #'   `protein_reliability`.
@@ -199,14 +239,21 @@ read_expression <- function(config) {
   })
 }
 
-#' Leer ontologia de enfermedades desde Parquet
+#' Read disease ontology from Parquet
 #'
-#' Lee el dataset de enfermedades de Open Targets (EFO/MONDO/DOID)
-#' y devuelve las columnas de ontologia como `data.table`.
+#' \[EN\] Reads the Open Targets disease dataset (EFO/MONDO/DOID) and returns
+#' the ontology columns as a `data.table`.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
+#' \[ESP\] Lee el dataset de enfermedades de Open Targets (EFO/MONDO/DOID) y
+#' devuelve las columnas de ontologia como `data.table`.
 #'
-#' @return `data.table` con columnas:
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#'
+#' @return \[EN\] `data.table` with columns:
+#'   `id`, `name`, `description`, `therapeuticAreas`,
+#'   `parents`, `ancestors`, `children`, `synonyms`.\cr
+#'   \[ESP\] `data.table` con columnas:
 #'   `id`, `name`, `description`, `therapeuticAreas`,
 #'   `parents`, `ancestors`, `children`, `synonyms`.
 #'

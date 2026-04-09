@@ -1,16 +1,16 @@
 # =============================================================================
-# core_cache.R — Sistema de cache del pipeline
+# core_cache.R — Pipeline cache system
 # =============================================================================
-# Backend: qs2 (rapido, comprimido) con fallback automatico a rds (base R).
-# Modo hash:      la clave es el MD5 de los inputs -> cambio de input = miss.
-# Modo timestamp: la clave es un nombre fijo     -> hit si el archivo existe.
-# =============================================================================
-
-# =============================================================================
-# Internos
+# Backend: qs2 (fast, compressed) with automatic fallback to rds (base R).
+# Hash mode:      the key is the MD5 of the inputs -> input change = miss.
+# Timestamp mode: the key is a fixed name          -> hit if the file exists.
 # =============================================================================
 
-# Construir la ruta de un archivo de cache a partir de su clave
+# =============================================================================
+# Internals
+# =============================================================================
+
+# Build the path of a cache file from its key
 .cache_path <- function(config, key) {
   dir    <- get_config(config, "rutas.outputs.cache")
   fmt    <- get_config(config, "cache.formato", default = "rds")
@@ -18,7 +18,7 @@
   file.path(dir, paste0(key, ".", ext))
 }
 
-# Leer un objeto desde cache (qs2 o rds)
+# Read an object from cache (qs2 or rds)
 .cache_read <- function(path, formato) {
   if (formato == "qs2") {
     qs2::qs_read(path)
@@ -27,7 +27,7 @@
   }
 }
 
-# Escribir un objeto a cache (qs2 o rds)
+# Write an object to cache (qs2 or rds)
 .cache_write <- function(object, path, formato) {
   ensure_dir(dirname(path))
   if (formato == "qs2") {
@@ -38,13 +38,13 @@
   invisible(path)
 }
 
-# Resolver el formato efectivo: qs2 si esta disponible, rds si no
-.cache_formato <- function(config) {
+# Resolve the effective format: qs2 if available, rds otherwise
+.cache_format <- function(config) {
   fmt <- get_config(config, "cache.formato", default = "rds")
   if (fmt == "qs2" && !requireNamespace("qs2", quietly = TRUE)) {
     message(
-      "El paquete 'qs2' no esta instalado. Usando 'rds' como backend de cache.\n",
-      "  Instalalo con: install.packages('qs2')"
+      "Package 'qs2' is not installed. Using 'rds' as cache backend.\n",
+      "  Install it with: install.packages('qs2')"
     )
     return("rds")
   }
@@ -52,18 +52,25 @@
 }
 
 # =============================================================================
-# API publica
+# Public API
 # =============================================================================
 
-#' Generar una clave de cache a partir de objetos R
+#' Generate a cache key from R objects
 #'
-#' Serializa los objetos recibidos y calcula su huella MD5 usando
+#' \[EN\] Serialises the received objects and computes their MD5 fingerprint
+#' using `tools::md5sum()`. The key changes if any input changes, which
+#' guarantees automatic invalidation in `"hash"` mode.
+#'
+#' \[ESP\] Serializa los objetos recibidos y calcula su huella MD5 usando
 #' `tools::md5sum()`. La clave cambia si cambia cualquier input, lo que
 #' garantiza invalidacion automatica en modo `"hash"`.
 #'
-#' @param ... Objetos R que determinan la clave (datos, parametros, config...).
+#' @param ... \[EN\] R objects that determine the key (data, parameters,
+#'   config...).\cr
+#'   \[ESP\] Objetos R que determinan la clave (datos, parametros, config...).
 #'
-#' @return Cadena hexadecimal de 32 caracteres (MD5).
+#' @return \[EN\] 32-character hexadecimal string (MD5).\cr
+#'   \[ESP\] Cadena hexadecimal de 32 caracteres (MD5).
 #' @export
 #'
 #' @examples
@@ -77,15 +84,22 @@ cache_key <- function(...) {
   unname(tools::md5sum(tmp))
 }
 
-#' Comprobar si existe una entrada valida en cache
+#' Check if a valid cache entry exists
 #'
-#' Devuelve `TRUE` si el archivo de cache correspondiente a `key` existe en
-#' disco. No valida el contenido del archivo.
+#' \[EN\] Returns `TRUE` if the cache file corresponding to `key` exists on
+#' disk. Does not validate the file contents.
 #'
-#' @param config Lista de configuracion devuelta por [load_config()].
-#' @param key Clave de cache, generada con [cache_key()] o cadena libre.
+#' \[ESP\] Devuelve `TRUE` si el archivo de cache correspondiente a `key`
+#' existe en disco. No valida el contenido del archivo.
 #'
-#' @return Logico.
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#' @param key \[EN\] Cache key, generated with [cache_key()] or a free
+#'   string.\cr
+#'   \[ESP\] Clave de cache, generada con [cache_key()] o cadena libre.
+#'
+#' @return \[EN\] Logical.\cr
+#'   \[ESP\] Logico.
 #' @export
 #'
 #' @examples
@@ -97,15 +111,21 @@ cache_exists <- function(config, key) {
   file.exists(.cache_path(config, key))
 }
 
-#' Recuperar un objeto desde cache
+#' Retrieve an object from cache
 #'
-#' Lee y devuelve el objeto almacenado bajo `key`. Devuelve `NULL` si la
-#' entrada no existe o si el cache esta desactivado.
+#' \[EN\] Reads and returns the object stored under `key`. Returns `NULL` if
+#' the entry does not exist or the cache is disabled.
 #'
-#' @param config Lista de configuracion devuelta por [load_config()].
-#' @param key Clave de cache.
+#' \[ESP\] Lee y devuelve el objeto almacenado bajo `key`. Devuelve `NULL` si
+#' la entrada no existe o si el cache esta desactivado.
 #'
-#' @return El objeto cacheado, o `NULL` si no existe.
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#' @param key \[EN\] Cache key.\cr
+#'   \[ESP\] Clave de cache.
+#'
+#' @return \[EN\] The cached object, or `NULL` if it does not exist.\cr
+#'   \[ESP\] El objeto cacheado, o `NULL` si no existe.
 #' @export
 #'
 #' @examples
@@ -116,21 +136,28 @@ cache_exists <- function(config, key) {
 #' }
 cache_get <- function(config, key) {
   if (!cache_exists(config, key)) return(NULL)
-  fmt  <- .cache_formato(config)
+  fmt  <- .cache_format(config)
   path <- .cache_path(config, key)
   .cache_read(path, fmt)
 }
 
-#' Guardar un objeto en cache
+#' Save an object to cache
 #'
-#' Almacena `object` en disco bajo la clave `key`. Si el cache esta
+#' \[EN\] Stores `object` on disk under `key`. If the cache is disabled in
+#' config, the call has no effect.
+#'
+#' \[ESP\] Almacena `object` en disco bajo la clave `key`. Si el cache esta
 #' desactivado en config, la llamada no tiene efecto.
 #'
-#' @param config Lista de configuracion devuelta por [load_config()].
-#' @param key Clave de cache.
-#' @param object Objeto R a almacenar.
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#' @param key \[EN\] Cache key.\cr
+#'   \[ESP\] Clave de cache.
+#' @param object \[EN\] R object to store.\cr
+#'   \[ESP\] Objeto R a almacenar.
 #'
-#' @return Invisible `NULL`.
+#' @return \[EN\] Invisible `NULL`.\cr
+#'   \[ESP\] Invisible `NULL`.
 #' @export
 #'
 #' @examples
@@ -141,23 +168,31 @@ cache_get <- function(config, key) {
 #' }
 cache_set <- function(config, key, object) {
   if (!isTRUE(get_config(config, "cache.activar"))) return(invisible(NULL))
-  fmt  <- .cache_formato(config)
+  fmt  <- .cache_format(config)
   path <- .cache_path(config, key)
   .cache_write(object, path, fmt)
   invisible(NULL)
 }
 
-#' Obtener desde cache o calcular y almacenar
+#' Get from cache or compute and store
 #'
-#' Patron principal de uso del cache en el pipeline. Si existe una entrada
-#' valida para `key`, la devuelve directamente. Si no, evalua `expr`, guarda
-#' el resultado y lo devuelve.
+#' \[EN\] Main cache usage pattern in the pipeline. If a valid entry exists for
+#' `key`, returns it directly. Otherwise evaluates `expr`, stores the result
+#' and returns it.
 #'
-#' @param config Lista de configuracion devuelta por [load_config()].
-#' @param key Clave de cache generada con [cache_key()].
-#' @param expr Expresion a evaluar en caso de cache miss (sin comillas).
+#' \[ESP\] Patron principal de uso del cache en el pipeline. Si existe una
+#' entrada valida para `key`, la devuelve directamente. Si no, evalua `expr`,
+#' guarda el resultado y lo devuelve.
 #'
-#' @return El resultado de `expr` (desde cache o recien calculado).
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#' @param key \[EN\] Cache key generated with [cache_key()].\cr
+#'   \[ESP\] Clave de cache generada con [cache_key()].
+#' @param expr \[EN\] Expression to evaluate on cache miss (unquoted).\cr
+#'   \[ESP\] Expresion a evaluar en caso de cache miss (sin comillas).
+#'
+#' @return \[EN\] The result of `expr` (from cache or freshly computed).\cr
+#'   \[ESP\] El resultado de `expr` (desde cache o recien calculado).
 #' @export
 #'
 #' @examples
@@ -176,14 +211,20 @@ cache_or_compute <- function(config, key, expr) {
   result
 }
 
-#' Eliminar una entrada del cache
+#' Invalidate a cache entry
 #'
-#' Borra el archivo de cache correspondiente a `key` si existe.
+#' \[EN\] Deletes the cache file corresponding to `key` if it exists.
 #'
-#' @param config Lista de configuracion devuelta por [load_config()].
-#' @param key Clave de cache.
+#' \[ESP\] Borra el archivo de cache correspondiente a `key` si existe.
 #'
-#' @return Invisible logico: `TRUE` si se elimino, `FALSE` si no existia.
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#' @param key \[EN\] Cache key.\cr
+#'   \[ESP\] Clave de cache.
+#'
+#' @return \[EN\] Invisible logical: `TRUE` if deleted, `FALSE` if it did not
+#'   exist.\cr
+#'   \[ESP\] Invisible logico: `TRUE` si se elimino, `FALSE` si no existia.
 #' @export
 #'
 #' @examples
@@ -201,14 +242,19 @@ cache_invalidate <- function(config, key) {
   invisible(FALSE)
 }
 
-#' Limpiar todo el cache de la ejecucion
+#' Clear the entire execution cache
 #'
-#' Elimina todos los archivos de la carpeta de cache definida en
+#' \[EN\] Deletes all files in the cache folder defined in
+#' `rutas.outputs.cache`. Does not delete the folder itself.
+#'
+#' \[ESP\] Elimina todos los archivos de la carpeta de cache definida en
 #' `rutas.outputs.cache`. No elimina la carpeta en si.
 #'
-#' @param config Lista de configuracion devuelta por [load_config()].
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
 #'
-#' @return Invisible numero de archivos eliminados.
+#' @return \[EN\] Invisible number of files deleted.\cr
+#'   \[ESP\] Invisible numero de archivos eliminados.
 #' @export
 #'
 #' @examples
@@ -219,8 +265,8 @@ cache_invalidate <- function(config, key) {
 cache_clear <- function(config) {
   dir <- get_config(config, "rutas.outputs.cache")
   if (is.null(dir) || !dir.exists(dir)) return(invisible(0L))
-  archivos <- list.files(dir, full.names = TRUE,
-                         pattern = "\\.(rds|qs2)$")
-  unlink(archivos)
-  invisible(length(archivos))
+  files <- list.files(dir, full.names = TRUE,
+                      pattern = "\\.(rds|qs2)$")
+  unlink(files)
+  invisible(length(files))
 }

@@ -1,17 +1,23 @@
 # ============================================================
-#  CAPA 2 — DATA  |  data_harmonize.R
-#  Filtrado, normalizacion y preparacion para la capa de red
+#  LAYER 2 — DATA  |  data_harmonize.R
+#  Filtering, normalisation and preparation for the network layer
 # ============================================================
 
-#' Filtrar genes protein-coding
+#' Filter protein-coding genes
 #'
-#' Retiene unicamente genes con `biotype == "protein_coding"` y
-#' elimina duplicados por `id`.
+#' \[EN\] Retains only genes with `biotype == "protein_coding"` and removes
+#' duplicates by `id`.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt `data.table` validado de genes.
+#' \[ESP\] Retiene unicamente genes con `biotype == "protein_coding"` y elimina
+#' duplicados por `id`.
 #'
-#' @return `data.table` filtrado con genes protein-coding unicos.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] Validated gene `data.table`.\cr
+#'   \[ESP\] `data.table` validado de genes.
+#'
+#' @return \[EN\] Filtered `data.table` with unique protein-coding genes.\cr
+#'   \[ESP\] `data.table` filtrado con genes protein-coding unicos.
 #'
 #' @export
 #' @importFrom data.table copy setkey
@@ -28,22 +34,30 @@ harmonize_genes <- function(config, dt) {
   data.table::setkey(out, "id")
 
   gh_log(config, "INFO", sprintf(
-    "[harmonize] genes protein-coding: %d", nrow(out)
+    "[harmonize] protein-coding genes: %d", nrow(out)
   ))
   out
 }
 
-#' Filtrar y normalizar interactoma
+#' Filter and normalise interactome
 #'
-#' Filtra por score minimo (config), retiene solo interacciones
-#' entre genes human-human (ambos targetA y targetB en lista de genes),
-#' y elimina auto-interacciones y duplicados.
+#' \[EN\] Filters by minimum score (config), retains only human-human
+#' interactions (both targetA and targetB in the gene list), and removes
+#' self-interactions and duplicates.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt     `data.table` validado de interactoma.
-#' @param genes  `data.table` armonizado de genes (con clave en `id`).
+#' \[ESP\] Filtra por score minimo (config), retiene solo interacciones
+#' entre genes human-human (ambos targetA y targetB en lista de genes), y
+#' elimina auto-interacciones y duplicados.
 #'
-#' @return `data.table` filtrado y sin duplicados.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] Validated interactome `data.table`.\cr
+#'   \[ESP\] `data.table` validado de interactoma.
+#' @param genes \[EN\] Harmonised gene `data.table` (keyed on `id`).\cr
+#'   \[ESP\] `data.table` armonizado de genes (con clave en `id`).
+#'
+#' @return \[EN\] Filtered `data.table` without duplicates.\cr
+#'   \[ESP\] `data.table` filtrado y sin duplicados.
 #'
 #' @export
 #' @importFrom data.table copy
@@ -52,13 +66,13 @@ harmonize_genes <- function(config, dt) {
 #' \dontrun{
 #' config <- load_config()
 #' genes  <- harmonize_genes(config, validate_genes(config, read_genes(config)))
-#' ppi    <- harmonize_interactoma(
+#' ppi    <- harmonize_interactome(
 #'   config,
-#'   validate_interactoma(config, read_interactoma(config)),
+#'   validate_interactome(config, read_interactome(config)),
 #'   genes
 #' )
 #' }
-harmonize_interactoma <- function(config, dt, genes) {
+harmonize_interactome <- function(config, dt, genes) {
   score_min <- get_config(config, "filtros.interactoma.score_min")
   gene_ids  <- genes[["id"]]
 
@@ -69,22 +83,29 @@ harmonize_interactoma <- function(config, dt, genes) {
   out <- unique(out, by = c("targetA", "targetB", "sourceDatabase"))
 
   gh_log(config, "INFO", sprintf(
-    "[harmonize] interactoma: %d interacciones (score >= %s)",
+    "[harmonize] interactome: %d interactions (score >= %s)",
     nrow(out), score_min
   ))
   out
 }
 
-#' Filtrar y normalizar GWAS variantes comunes
+#' Filter and normalise common variant GWAS
 #'
-#' Filtra por score minimo, retiene solo genes en lista de referencia
-#' y elimina filas sin diseaseId.
+#' \[EN\] Filters by minimum score, retains only genes in the reference list
+#' and removes rows without diseaseId.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt     `data.table` validado de gwas_comun.
-#' @param genes  `data.table` armonizado de genes.
+#' \[ESP\] Filtra por score minimo, retiene solo genes en lista de referencia y
+#' elimina filas sin diseaseId.
 #'
-#' @return `data.table` filtrado.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] Validated gwas_comun `data.table`.\cr
+#'   \[ESP\] `data.table` validado de gwas_comun.
+#' @param genes \[EN\] Harmonised gene `data.table`.\cr
+#'   \[ESP\] `data.table` armonizado de genes.
+#'
+#' @return \[EN\] Filtered `data.table`.\cr
+#'   \[ESP\] `data.table` filtrado.
 #'
 #' @export
 #' @importFrom data.table copy
@@ -109,22 +130,29 @@ harmonize_gwas_common <- function(config, dt, genes) {
   out <- out[out[["targetId"]] %in% gene_ids]
 
   gh_log(config, "INFO", sprintf(
-    "[harmonize] gwas_comun: %d asociaciones (score >= %s)",
+    "[harmonize] gwas_comun: %d associations (score >= %s)",
     nrow(out), score_min
   ))
   out
 }
 
-#' Filtrar y normalizar GWAS variantes raras
+#' Filter and normalise rare variant GWAS
 #'
-#' Filtra por score minimo, por significancia clinica configurada,
+#' \[EN\] Filters by minimum score, by configured clinical significance,
+#' retains only genes in the reference list and removes rows without diseaseId.
+#'
+#' \[ESP\] Filtra por score minimo, por significancia clinica configurada,
 #' retiene solo genes en lista de referencia y elimina filas sin diseaseId.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt     `data.table` validado de gwas_rara.
-#' @param genes  `data.table` armonizado de genes.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] Validated gwas_rara `data.table`.\cr
+#'   \[ESP\] `data.table` validado de gwas_rara.
+#' @param genes \[EN\] Harmonised gene `data.table`.\cr
+#'   \[ESP\] `data.table` armonizado de genes.
 #'
-#' @return `data.table` filtrado.
+#' @return \[EN\] Filtered `data.table`.\cr
+#'   \[ESP\] `data.table` filtrado.
 #'
 #' @export
 #' @importFrom data.table copy
@@ -148,30 +176,37 @@ harmonize_gwas_rare <- function(config, dt, genes) {
   out <- out[out[["score"]] >= score_min]
   out <- out[out[["targetId"]] %in% gene_ids]
 
-  sig_excluir <- get_config(config, "filtros.gwas_rara.clinicalSignificances_excluir")
-  if (!is.null(sig_excluir) && length(sig_excluir) > 0L) {
-    pattern <- paste(sig_excluir, collapse = "|")
+  excl_sigs <- get_config(config, "filtros.gwas_rara.clinicalSignificances_excluir")
+  if (!is.null(excl_sigs) && length(excl_sigs) > 0L) {
+    pattern <- paste(excl_sigs, collapse = "|")
     out <- out[!grepl(pattern, out[["clinicalSignificances"]], ignore.case = TRUE) |
                  is.na(out[["clinicalSignificances"]])]
   }
 
   gh_log(config, "INFO", sprintf(
-    "[harmonize] gwas_rara: %d asociaciones (score >= %s)",
+    "[harmonize] gwas_rara: %d associations (score >= %s)",
     nrow(out), score_min
   ))
   out
 }
 
-#' Filtrar y normalizar datos de expresion genica
+#' Filter and normalise gene expression data
 #'
-#' Filtra por nivel de expresion minimo (rna_level) y por genes
-#' en lista de referencia.
+#' \[EN\] Filters by minimum expression level (rna_level) and by genes in the
+#' reference list.
 #'
-#' @param config Lista de configuracion creada por [load_config()].
-#' @param dt     `data.table` validado de expresion.
-#' @param genes  `data.table` armonizado de genes.
+#' \[ESP\] Filtra por nivel de expresion minimo (rna_level) y por genes en
+#' lista de referencia.
 #'
-#' @return `data.table` filtrado.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] Validated expression `data.table`.\cr
+#'   \[ESP\] `data.table` validado de expresion.
+#' @param genes \[EN\] Harmonised gene `data.table`.\cr
+#'   \[ESP\] `data.table` armonizado de genes.
+#'
+#' @return \[EN\] Filtered `data.table`.\cr
+#'   \[ESP\] `data.table` filtrado.
 #'
 #' @export
 #' @importFrom data.table copy
@@ -195,24 +230,31 @@ harmonize_expression <- function(config, dt, genes) {
   out <- out[out[["id"]] %in% gene_ids]
 
   gh_log(config, "INFO", sprintf(
-    "[harmonize] expresion: %d filas (rna_level >= %d)",
+    "[harmonize] expression: %d rows (rna_level >= %d)",
     nrow(out), level_min
   ))
   out
 }
 
-#' Filtrar ontologia de enfermedades
+#' Filter disease ontology
 #'
-#' Retiene solo enfermedades presentes en al menos uno de los
-#' datasets GWAS (comun o raro) para reducir la ontologia
-#' al subconjunto relevante.
+#' \[EN\] Retains only diseases present in at least one of the GWAS datasets
+#' (common or rare) to reduce the ontology to the relevant subset.
 #'
-#' @param config       Lista de configuracion creada por [load_config()].
-#' @param dt           `data.table` validado de enfermedades.
-#' @param gwas_comun   `data.table` armonizado de gwas_comun.
-#' @param gwas_rara    `data.table` armonizado de gwas_rara.
+#' \[ESP\] Retiene solo enfermedades presentes en al menos uno de los datasets
+#' GWAS (comun o raro) para reducir la ontologia al subconjunto relevante.
 #'
-#' @return `data.table` filtrado de enfermedades.
+#' @param config \[EN\] Configuration list created by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion creada por [load_config()].
+#' @param dt \[EN\] Validated disease `data.table`.\cr
+#'   \[ESP\] `data.table` validado de enfermedades.
+#' @param gwas_common \[EN\] Harmonised gwas_comun `data.table`.\cr
+#'   \[ESP\] `data.table` armonizado de gwas_comun.
+#' @param gwas_rare \[EN\] Harmonised gwas_rara `data.table`.\cr
+#'   \[ESP\] `data.table` armonizado de gwas_rara.
+#'
+#' @return \[EN\] Filtered disease `data.table`.\cr
+#'   \[ESP\] `data.table` filtrado de enfermedades.
 #'
 #' @export
 #' @importFrom data.table copy
@@ -231,13 +273,13 @@ harmonize_expression <- function(config, dt, genes) {
 #'   gc, gr
 #' )
 #' }
-harmonize_diseases <- function(config, dt, gwas_comun, gwas_rara) {
-  dis_gwas <- unique(c(gwas_comun[["diseaseId"]], gwas_rara[["diseaseId"]]))
-  out      <- data.table::copy(dt)
-  out      <- out[out[["id"]] %in% dis_gwas]
+harmonize_diseases <- function(config, dt, gwas_common, gwas_rare) {
+  gwas_disease_ids <- unique(c(gwas_common[["diseaseId"]], gwas_rare[["diseaseId"]]))
+  out              <- data.table::copy(dt)
+  out              <- out[out[["id"]] %in% gwas_disease_ids]
 
   gh_log(config, "INFO", sprintf(
-    "[harmonize] enfermedades: %d terminos relevantes", nrow(out)
+    "[harmonize] diseases: %d relevant terms", nrow(out)
   ))
   out
 }
