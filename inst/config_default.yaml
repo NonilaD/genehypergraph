@@ -28,12 +28,13 @@ rutas:
     expresion:    "inputs/expresion"
     enfermedades: "inputs/enfermedades"
   outputs:
-    root:          "outputs"
-    global:        "outputs/{run_id}/global"
-    traits:        "outputs/{run_id}/traits/{trait_id}__{trait_name}"
-    visualizacion: "outputs/{run_id}/traits/{trait_id}__{trait_name}/06_visualizacion/{capa}"
-    logs:          "outputs/{run_id}/logs"
-    cache:         "outputs/cache"
+    root:             "outputs"
+    global:           "outputs/{run_id}/global"
+    traits:           "outputs/{run_id}/traits/{trait_id}__{trait_name}"
+    viz_trait:        "outputs/{run_id}/traits/{trait_id}__{trait_name}/06_visualizacion/{capa}"
+    viz_global:       "outputs/{run_id}/global/visualizacion"
+    logs:             "outputs/{run_id}/logs"
+    cache:            "outputs/cache"
 
 # =============================================================================
 # 4. Pipeline
@@ -53,9 +54,10 @@ pipeline:
   analysis_significance: true
   analysis_latent:       false
   analysis_hypergraph:   false
-  results_annotation:    false
-  results_visualization: true
-  results_export:        true
+  results_annotation:     false
+  results_visualization:  true
+  results_export:         true
+  results_summary:        true
 
 # =============================================================================
 # 5. Capas
@@ -79,7 +81,7 @@ filtros:
     biotype: "protein_coding"
 
   interactoma:
-    string_threshold:    0.75
+    score_min:           0.5
     eliminar_self_loops: true
     eliminar_duplicados: true
 
