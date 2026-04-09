@@ -2,22 +2,30 @@
 % Please edit documentation in R/data_harmonize.R
 \name{harmonize_gwas_rare}
 \alias{harmonize_gwas_rare}
-\title{Filtrar y normalizar GWAS variantes raras}
+\title{Filter and normalise rare variant GWAS}
 \usage{
 harmonize_gwas_rare(config, dt, genes)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} validado de gwas_rara.}
+\item{dt}{[EN] Validated gwas_rara \code{data.table}.\cr
+[ESP] \code{data.table} validado de gwas_rara.}
 
-\item{genes}{\code{data.table} armonizado de genes.}
+\item{genes}{[EN] Harmonised gene \code{data.table}.\cr
+[ESP] \code{data.table} armonizado de genes.}
 }
 \value{
-\code{data.table} filtrado.
+[EN] Filtered \code{data.table}.\cr
+[ESP] \code{data.table} filtrado.
 }
 \description{
-Filtra por score minimo, por significancia clinica configurada,
+[EN] Filters by minimum score, by configured clinical significance,
+retains only genes in the reference list and removes rows without diseaseId.
+}
+\details{
+[ESP] Filtra por score minimo, por significancia clinica configurada,
 retiene solo genes en lista de referencia y elimina filas sin diseaseId.
 }
 \examples{

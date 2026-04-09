@@ -2,20 +2,27 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_header}
 \alias{gh_header}
-\title{Cabecera de inicio del pipeline}
+\title{Pipeline start header}
 \usage{
 gh_header(config, n_traits)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{n_traits}{Numero de traits a procesar.}
+\item{n_traits}{[EN] Number of traits to process.\cr
+[ESP] Numero de traits a procesar.}
 }
 \value{
-Invisible \code{NULL}. Se llama por sus efectos en consola.
+[EN] Invisible \code{NULL}. Called for its console side effects.\cr
+[ESP] Invisible \code{NULL}. Se llama por sus efectos en consola.
 }
 \description{
-Muestra el bloque de presentacion al arrancar el pipeline, con el
+[EN] Displays the presentation block when the pipeline starts, with the
+execution identifier, traits and active layers.
+}
+\details{
+[ESP] Muestra el bloque de presentacion al arrancar el pipeline, con el
 identificador de ejecucion, traits y capas activas.
 }
 \examples{

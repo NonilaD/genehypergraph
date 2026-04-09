@@ -2,24 +2,33 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_or_compute}
 \alias{cache_or_compute}
-\title{Obtener desde cache o calcular y almacenar}
+\title{Get from cache or compute and store}
 \usage{
 cache_or_compute(config, key, expr)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{key}{Clave de cache generada con \code{\link[=cache_key]{cache_key()}}.}
+\item{key}{[EN] Cache key generated with \code{\link[=cache_key]{cache_key()}}.\cr
+[ESP] Clave de cache generada con \code{\link[=cache_key]{cache_key()}}.}
 
-\item{expr}{Expresion a evaluar en caso de cache miss (sin comillas).}
+\item{expr}{[EN] Expression to evaluate on cache miss (unquoted).\cr
+[ESP] Expresion a evaluar en caso de cache miss (sin comillas).}
 }
 \value{
-El resultado de \code{expr} (desde cache o recien calculado).
+[EN] The result of \code{expr} (from cache or freshly computed).\cr
+[ESP] El resultado de \code{expr} (desde cache o recien calculado).
 }
 \description{
-Patron principal de uso del cache en el pipeline. Si existe una entrada
-valida para \code{key}, la devuelve directamente. Si no, evalua \code{expr}, guarda
-el resultado y lo devuelve.
+[EN] Main cache usage pattern in the pipeline. If a valid entry exists for
+\code{key}, returns it directly. Otherwise evaluates \code{expr}, stores the result
+and returns it.
+}
+\details{
+[ESP] Patron principal de uso del cache en el pipeline. Si existe una
+entrada valida para \code{key}, la devuelve directamente. Si no, evalua \code{expr},
+guarda el resultado y lo devuelve.
 }
 \examples{
 \dontrun{

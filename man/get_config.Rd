@@ -2,24 +2,35 @@
 % Please edit documentation in R/core_config.R
 \name{get_config}
 \alias{get_config}
-\title{Acceder a un valor de la configuración por ruta de claves}
+\title{Access a configuration value by key path}
 \usage{
 get_config(config, path, default = NULL)
 }
 \arguments{
-\item{config}{Lista de configuración devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{path}{Cadena de claves separadas por \code{"."},
-p. ej. \code{"comunidades.recluster.activar"}.}
+\item{path}{[EN] Dot-separated key string, e.g.
+\code{"comunidades.recluster.activar"}.\cr
+[ESP] Cadena de claves separadas por \code{"."}, p. ej.
+\code{"comunidades.recluster.activar"}.}
 
-\item{default}{Valor devuelto si la clave no existe. Por defecto \code{NULL}.}
+\item{default}{[EN] Value returned if the key does not exist. Default
+\code{NULL}.\cr
+[ESP] Valor devuelto si la clave no existe. Por defecto \code{NULL}.}
 }
 \value{
-El valor almacenado en esa ruta, o \code{default} si no existe.
+[EN] The value stored at that path, or \code{default} if it does not
+exist.\cr
+[ESP] El valor almacenado en esa ruta, o \code{default} si no existe.
 }
 \description{
-Permite acceder a valores anidados de la configuración usando una cadena de
-claves separadas por \code{"."} sin necesidad de encadenar \code{$}.
+[EN] Allows access to nested configuration values using a dot-separated
+key string without needing to chain \code{$}.
+}
+\details{
+[ESP] Permite acceder a valores anidados de la configuracion usando una
+cadena de claves separadas por \code{"."} sin necesidad de encadenar \code{$}.
 }
 \examples{
 config <- load_config()

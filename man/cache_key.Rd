@@ -2,18 +2,26 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_key}
 \alias{cache_key}
-\title{Generar una clave de cache a partir de objetos R}
+\title{Generate a cache key from R objects}
 \usage{
 cache_key(...)
 }
 \arguments{
-\item{...}{Objetos R que determinan la clave (datos, parametros, config...).}
+\item{...}{[EN] R objects that determine the key (data, parameters,
+config...).\cr
+[ESP] Objetos R que determinan la clave (datos, parametros, config...).}
 }
 \value{
-Cadena hexadecimal de 32 caracteres (MD5).
+[EN] 32-character hexadecimal string (MD5).\cr
+[ESP] Cadena hexadecimal de 32 caracteres (MD5).
 }
 \description{
-Serializa los objetos recibidos y calcula su huella MD5 usando
+[EN] Serialises the received objects and computes their MD5 fingerprint
+using \code{tools::md5sum()}. The key changes if any input changes, which
+guarantees automatic invalidation in \code{"hash"} mode.
+}
+\details{
+[ESP] Serializa los objetos recibidos y calcula su huella MD5 usando
 \code{tools::md5sum()}. La clave cambia si cambia cualquier input, lo que
 garantiza invalidacion automatica en modo \code{"hash"}.
 }

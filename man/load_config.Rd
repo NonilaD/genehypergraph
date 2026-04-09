@@ -2,34 +2,47 @@
 % Please edit documentation in R/core_config.R
 \name{load_config}
 \alias{load_config}
-\title{Cargar la configuración del pipeline}
+\title{Load pipeline configuration}
 \usage{
 load_config(user_config = NULL, run_id = NULL, validate = TRUE)
 }
 \arguments{
-\item{user_config}{Ruta al YAML del usuario. Si es \code{NULL} se usan solo los
-valores por defecto.}
+\item{user_config}{[EN] Path to the user YAML. If \code{NULL} only default
+values are used.\cr
+[ESP] Ruta al YAML del usuario. Si es \code{NULL} se usan solo los valores
+por defecto.}
 
-\item{run_id}{Identificador de la ejecución (cadena de texto). Si es \code{NULL}
-se genera automáticamente con la fecha y hora actuales
-(\code{"YYYYMMDD_HHMMSS"}).}
+\item{run_id}{[EN] Execution identifier (character string). If \code{NULL} it
+is generated automatically from the current date and time
+(\code{"YYYYMMDD_HHMMSS"}).\cr
+[ESP] Identificador de la ejecucion (cadena de texto). Si es \code{NULL} se
+genera automaticamente con la fecha y hora actuales (\code{"YYYYMMDD_HHMMSS"}).}
 
-\item{validate}{Lógico. Si \code{TRUE} (por defecto) valida las claves
-obligatorias y los rangos de los parámetros críticos.}
+\item{validate}{[EN] Logical. If \code{TRUE} (default) validates required keys
+and ranges of critical parameters.\cr
+[ESP] Logico. Si \code{TRUE} (por defecto) valida las claves obligatorias y
+los rangos de los parametros criticos.}
 }
 \value{
-Lista nombrada con la configuración resultante. Incluye el campo
+[EN] Named list with the resulting configuration. Includes the
+\verb{$run_id} field and output paths with \code{{run_id}} already resolved.\cr
+[ESP] Lista nombrada con la configuracion resultante. Incluye el campo
 \verb{$run_id} y las rutas de output con \code{{run_id}} ya resuelto.
 }
 \description{
-Carga el YAML por defecto del paquete y, opcionalmente, lo fusiona con un
-YAML de usuario mediante merge recursivo: las claves del usuario prevalecen,
-pero las no especificadas conservan el valor por defecto.
+[EN] Loads the package default YAML and optionally merges it with a user
+YAML via recursive merge: user keys take precedence, but unspecified keys
+retain their default value. Output paths containing \code{{run_id}} are resolved
+in this step. The placeholders \code{{trait_id}}, \code{{trait_name}} and \code{{capa}} are
+resolved later, per trait, via \code{\link[=resolve_trait_path]{resolve_trait_path()}}.
 }
 \details{
-Las rutas de output que contienen \code{{run_id}} se resuelven en este paso.
-Los placeholders \code{{trait_id}}, \code{{trait_name}} y \code{{capa}} se resuelven
-después, por trait, mediante \code{\link[=resolve_trait_path]{resolve_trait_path()}}.
+[ESP] Carga el YAML por defecto del paquete y, opcionalmente, lo fusiona
+con un YAML de usuario mediante merge recursivo: las claves del usuario
+prevalecen, pero las no especificadas conservan el valor por defecto. Las
+rutas de output que contienen \code{{run_id}} se resuelven en este paso. Los
+placeholders \code{{trait_id}}, \code{{trait_name}} y \code{{capa}} se resuelven despues,
+por trait, mediante \code{\link[=resolve_trait_path]{resolve_trait_path()}}.
 }
 \examples{
 config <- load_config()

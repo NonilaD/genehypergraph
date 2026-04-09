@@ -2,22 +2,31 @@
 % Please edit documentation in R/data_io.R
 \name{read_expression}
 \alias{read_expression}
-\title{Leer datos de expresion genica por tejido desde Parquet}
+\title{Read tissue gene expression data from Parquet}
 \usage{
 read_expression(config)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-\code{data.table} con columnas:
+[EN] \code{data.table} with columns:
+\code{id}, \code{efo_code}, \code{label}, \code{rna_value}, \code{rna_zscore}, \code{rna_level},
+\code{rna_unit}, \code{organs}, \code{anatomical_systems}, \code{protein_level},
+\code{protein_reliability}.\cr
+[ESP] \code{data.table} con columnas:
 \code{id}, \code{efo_code}, \code{label}, \code{rna_value}, \code{rna_zscore}, \code{rna_level},
 \code{rna_unit}, \code{organs}, \code{anatomical_systems}, \code{protein_level},
 \code{protein_reliability}.
 }
 \description{
-Lee el dataset de expresion (GTEx / HPA) de Open Targets
-y devuelve todas las columnas como \code{data.table}.
+[EN] Reads the expression dataset (GTEx / HPA) from Open Targets and
+returns all columns as a \code{data.table}.
+}
+\details{
+[ESP] Lee el dataset de expresion (GTEx / HPA) de Open Targets y devuelve
+todas las columnas como \code{data.table}.
 }
 \examples{
 \dontrun{

@@ -2,20 +2,26 @@
 % Please edit documentation in R/data_validate.R
 \name{validate_genes}
 \alias{validate_genes}
-\title{Validar dataset de genes}
+\title{Validate gene dataset}
 \usage{
 validate_genes(config, dt)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} devuelto por \code{\link[=read_genes]{read_genes()}}.}
+\item{dt}{[EN] \code{data.table} returned by \code{\link[=read_genes]{read_genes()}}.\cr
+[ESP] \code{data.table} devuelto por \code{\link[=read_genes]{read_genes()}}.}
 }
 \value{
-\code{dt} sin modificaciones (los problemas se registran via log).
+[EN] \code{dt} unmodified (issues are logged via log).\cr
+[ESP] \code{dt} sin modificaciones (los problemas se registran via log).
 }
 \description{
-Comprueba columnas, patron Ensembl, biotipos y duplicados.
+[EN] Checks columns, Ensembl pattern, biotypes and duplicates.
+}
+\details{
+[ESP] Comprueba columnas, patron Ensembl, biotipos y duplicados.
 }
 \examples{
 \dontrun{

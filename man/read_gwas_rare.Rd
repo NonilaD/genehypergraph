@@ -2,23 +2,33 @@
 % Please edit documentation in R/data_io.R
 \name{read_gwas_rare}
 \alias{read_gwas_rare}
-\title{Leer asociaciones GWAS de variantes raras desde Parquet}
+\title{Read rare variant GWAS associations from Parquet}
 \usage{
 read_gwas_rare(config)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-\code{data.table} con columnas:
+[EN] \code{data.table} with columns:
+\code{datasourceId}, \code{targetId}, \code{diseaseId}, \code{diseaseFromSource},
+\code{score}, \code{clinicalSignificances}, \code{variantId}, \code{variantRsId},
+\code{variantFromSourceId}, \code{variantFunctionalConsequenceId},
+\code{alleleOrigins}, \code{datatypeId}, \code{confidence}, \code{directionOnTrait}.\cr
+[ESP] \code{data.table} con columnas:
 \code{datasourceId}, \code{targetId}, \code{diseaseId}, \code{diseaseFromSource},
 \code{score}, \code{clinicalSignificances}, \code{variantId}, \code{variantRsId},
 \code{variantFromSourceId}, \code{variantFunctionalConsequenceId},
 \code{alleleOrigins}, \code{datatypeId}, \code{confidence}, \code{directionOnTrait}.
 }
 \description{
-Lee los datos de variantes raras (EVA, ClinVar) de Open Targets
-y devuelve las columnas de asociacion gen-enfermedad como \code{data.table}.
+[EN] Reads the rare variant data (EVA, ClinVar) from Open Targets and
+returns the gene-disease association columns as a \code{data.table}.
+}
+\details{
+[ESP] Lee los datos de variantes raras (EVA, ClinVar) de Open Targets y
+devuelve las columnas de asociacion gen-enfermedad como \code{data.table}.
 }
 \examples{
 \dontrun{

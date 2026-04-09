@@ -2,18 +2,24 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_clear}
 \alias{cache_clear}
-\title{Limpiar todo el cache de la ejecucion}
+\title{Clear the entire execution cache}
 \usage{
 cache_clear(config)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-Invisible numero de archivos eliminados.
+[EN] Invisible number of files deleted.\cr
+[ESP] Invisible numero de archivos eliminados.
 }
 \description{
-Elimina todos los archivos de la carpeta de cache definida en
+[EN] Deletes all files in the cache folder defined in
+\code{rutas.outputs.cache}. Does not delete the folder itself.
+}
+\details{
+[ESP] Elimina todos los archivos de la carpeta de cache definida en
 \code{rutas.outputs.cache}. No elimina la carpeta en si.
 }
 \examples{

@@ -2,37 +2,50 @@
 % Please edit documentation in R/core_utils.R
 \name{build_output_path}
 \alias{build_output_path}
-\title{Construir ruta de output para un trait y capa}
+\title{Build an output path for a trait and layer}
 \usage{
 build_output_path(
   config,
-  tipo,
+  type,
   trait_id,
   trait_name,
-  capa = NULL,
-  crear = TRUE
+  layer = NULL,
+  create = TRUE
 )
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{tipo}{Clave de ruta en \code{rutas.outputs}, p. ej. \code{"visualizacion"} o
+\item{type}{[EN] Path key in \code{rutas.outputs}, e.g. \code{"visualizacion"} or
+\code{"traits"}.\cr
+[ESP] Clave de ruta en \code{rutas.outputs}, p. ej. \code{"visualizacion"} o
 \code{"traits"}.}
 
-\item{trait_id}{ID EFO/MONDO del trait.}
+\item{trait_id}{[EN] EFO/MONDO ID of the trait.\cr
+[ESP] ID EFO/MONDO del trait.}
 
-\item{trait_name}{Nombre legible del trait.}
+\item{trait_name}{[EN] Human-readable trait name.\cr
+[ESP] Nombre legible del trait.}
 
-\item{capa}{Nombre de la capa. Si es \code{NULL} no se resuelve \code{{capa}}.}
+\item{layer}{[EN] Layer name. If \code{NULL} the \code{{capa}} placeholder is not
+resolved.\cr
+[ESP] Nombre de la capa. Si es \code{NULL} no se resuelve \code{{capa}}.}
 
-\item{crear}{Logico. Si \code{TRUE} (por defecto) crea el directorio.}
+\item{create}{[EN] Logical. If \code{TRUE} (default) creates the directory.\cr
+[ESP] Logico. Si \code{TRUE} (por defecto) crea el directorio.}
 }
 \value{
-Ruta resuelta como cadena de texto.
+[EN] Resolved path as a character string.\cr
+[ESP] Ruta resuelta como cadena de texto.
 }
 \description{
-Combina la ruta base de outputs del config con los placeholders de trait y
-capa, y crea el directorio si no existe.
+[EN] Combines the config output base path with trait and layer
+placeholders, and creates the directory if it does not exist.
+}
+\details{
+[ESP] Combina la ruta base de outputs del config con los placeholders de
+trait y capa, y crea el directorio si no existe.
 }
 \examples{
 config <- load_config()

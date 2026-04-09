@@ -2,23 +2,31 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_footer}
 \alias{gh_footer}
-\title{Resumen de fin de ejecucion}
+\title{Execution end summary}
 \usage{
 gh_footer(n_ok, n_total, tiempo_total)
 }
 \arguments{
-\item{n_ok}{Numero de traits completados correctamente.}
+\item{n_ok}{[EN] Number of traits completed successfully.\cr
+[ESP] Numero de traits completados correctamente.}
 
-\item{n_total}{Total de traits intentados.}
+\item{n_total}{[EN] Total traits attempted.\cr
+[ESP] Total de traits intentados.}
 
-\item{tiempo_total}{Duracion total en segundos.}
+\item{tiempo_total}{[EN] Total duration in seconds.\cr
+[ESP] Duracion total en segundos.}
 }
 \value{
-Invisible \code{NULL}.
+[EN] Invisible \code{NULL}.\cr
+[ESP] Invisible \code{NULL}.
 }
 \description{
-Muestra una regla de cierre con el total de traits procesados y el tiempo
-total de ejecucion.
+[EN] Displays a closing rule with the total traits processed and total
+execution time.
+}
+\details{
+[ESP] Muestra una regla de cierre con el total de traits procesados y el
+tiempo total de ejecucion.
 }
 \examples{
 gh_footer(n_ok = 843, n_total = 844, tiempo_total = 8040)

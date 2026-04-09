@@ -2,23 +2,33 @@
 % Please edit documentation in R/data_io.R
 \name{read_gwas_common}
 \alias{read_gwas_common}
-\title{Leer asociaciones GWAS de variantes comunes desde Parquet}
+\title{Read common variant GWAS associations from Parquet}
 \usage{
 read_gwas_common(config)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-\code{data.table} con columnas de asociacion GWAS:
+[EN] \code{data.table} with GWAS association columns:
+\code{datasourceId}, \code{targetId}, \code{diseaseId}, \code{diseaseFromSource},
+\code{score}, \code{pValueExponent}, \code{pValueMantissa}, \code{beta}, \code{oddsRatio},
+\code{variantId}, \code{variantRsId}, \code{studyId}, \code{studyLocusId},
+\code{datatypeId}, \code{resourceScore}, \code{directionOnTrait}.\cr
+[ESP] \code{data.table} con columnas de asociacion GWAS:
 \code{datasourceId}, \code{targetId}, \code{diseaseId}, \code{diseaseFromSource},
 \code{score}, \code{pValueExponent}, \code{pValueMantissa}, \code{beta}, \code{oddsRatio},
 \code{variantId}, \code{variantRsId}, \code{studyId}, \code{studyLocusId},
 \code{datatypeId}, \code{resourceScore}, \code{directionOnTrait}.
 }
 \description{
-Lee los credible sets de GWAS (Open Targets) y devuelve
-las columnas de asociacion gen-enfermedad como \code{data.table}.
+[EN] Reads the GWAS credible sets (Open Targets) and returns the
+gene-disease association columns as a \code{data.table}.
+}
+\details{
+[ESP] Lee los credible sets de GWAS (Open Targets) y devuelve las columnas
+de asociacion gen-enfermedad como \code{data.table}.
 }
 \examples{
 \dontrun{

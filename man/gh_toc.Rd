@@ -2,18 +2,23 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_toc}
 \alias{gh_toc}
-\title{Calcular tiempo transcurrido}
+\title{Calculate elapsed time}
 \usage{
 gh_toc(t0)
 }
 \arguments{
-\item{t0}{Objeto \code{proc_time} devuelto por \code{\link[=gh_tic]{gh_tic()}}.}
+\item{t0}{[EN] \code{proc_time} object returned by \code{\link[=gh_tic]{gh_tic()}}.\cr
+[ESP] Objeto \code{proc_time} devuelto por \code{\link[=gh_tic]{gh_tic()}}.}
 }
 \value{
-Tiempo transcurrido en segundos (numeric).
+[EN] Elapsed time in seconds (numeric).\cr
+[ESP] Tiempo transcurrido en segundos (numeric).
 }
 \description{
-Calcular tiempo transcurrido
+[EN] Computes the elapsed time since the stopwatch was started.
+}
+\details{
+[ESP] Calcula el tiempo transcurrido desde que se inicio el cronometro.
 }
 \examples{
 t0 <- gh_tic()

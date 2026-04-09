@@ -2,26 +2,34 @@
 % Please edit documentation in R/data_harmonize.R
 \name{harmonize_diseases}
 \alias{harmonize_diseases}
-\title{Filtrar ontologia de enfermedades}
+\title{Filter disease ontology}
 \usage{
-harmonize_diseases(config, dt, gwas_comun, gwas_rara)
+harmonize_diseases(config, dt, gwas_common, gwas_rare)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} validado de enfermedades.}
+\item{dt}{[EN] Validated disease \code{data.table}.\cr
+[ESP] \code{data.table} validado de enfermedades.}
 
-\item{gwas_comun}{\code{data.table} armonizado de gwas_comun.}
+\item{gwas_common}{[EN] Harmonised gwas_comun \code{data.table}.\cr
+[ESP] \code{data.table} armonizado de gwas_comun.}
 
-\item{gwas_rara}{\code{data.table} armonizado de gwas_rara.}
+\item{gwas_rare}{[EN] Harmonised gwas_rara \code{data.table}.\cr
+[ESP] \code{data.table} armonizado de gwas_rara.}
 }
 \value{
-\code{data.table} filtrado de enfermedades.
+[EN] Filtered disease \code{data.table}.\cr
+[ESP] \code{data.table} filtrado de enfermedades.
 }
 \description{
-Retiene solo enfermedades presentes en al menos uno de los
-datasets GWAS (comun o raro) para reducir la ontologia
-al subconjunto relevante.
+[EN] Retains only diseases present in at least one of the GWAS datasets
+(common or rare) to reduce the ontology to the relevant subset.
+}
+\details{
+[ESP] Retiene solo enfermedades presentes en al menos uno de los datasets
+GWAS (comun o raro) para reducir la ontologia al subconjunto relevante.
 }
 \examples{
 \dontrun{

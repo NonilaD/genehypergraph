@@ -2,19 +2,25 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_gc}
 \alias{gh_gc}
-\title{Ejecutar recoleccion de basura entre pasos si esta configurado}
+\title{Run garbage collection between steps if configured}
 \usage{
 gh_gc(config)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-Invisible \code{NULL}.
+[EN] Invisible \code{NULL}.\cr
+[ESP] Invisible \code{NULL}.
 }
 \description{
-Llama a \code{gc()} solo si \code{config$rendimiento$gc_entre_pasos} es \code{TRUE}.
-Reduce el uso de RAM entre pasos pesados del pipeline.
+[EN] Calls \code{gc()} only if \code{config$rendimiento$gc_entre_pasos} is \code{TRUE}.
+Reduces RAM usage between heavy pipeline steps.
+}
+\details{
+[ESP] Llama a \code{gc()} solo si \code{config$rendimiento$gc_entre_pasos} es
+\code{TRUE}. Reduce el uso de RAM entre pasos pesados del pipeline.
 }
 \examples{
 config <- load_config()

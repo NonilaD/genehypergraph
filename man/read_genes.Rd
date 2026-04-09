@@ -2,20 +2,27 @@
 % Please edit documentation in R/data_io.R
 \name{read_genes}
 \alias{read_genes}
-\title{Leer genes protein-coding desde Parquet}
+\title{Read protein-coding genes from Parquet}
 \usage{
 read_genes(config)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-\code{data.table} con columnas:
+[EN] \code{data.table} with columns:
+\code{id}, \code{approvedSymbol}, \code{biotype}, \code{approvedName}, \code{genomicLocation}.\cr
+[ESP] \code{data.table} con columnas:
 \code{id}, \code{approvedSymbol}, \code{biotype}, \code{approvedName}, \code{genomicLocation}.
 }
 \description{
-Lee el dataset de genes de Open Targets Target y devuelve
-un subconjunto de columnas esenciales como \code{data.table}.
+[EN] Reads the Open Targets Target gene dataset and returns a subset of
+essential columns as a \code{data.table}.
+}
+\details{
+[ESP] Lee el dataset de genes de Open Targets Target y devuelve un
+subconjunto de columnas esenciales como \code{data.table}.
 }
 \examples{
 \dontrun{

@@ -2,33 +2,44 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_manifest}
 \alias{gh_manifest}
-\title{Registrar una entrada en el manifest de la ejecucion}
+\title{Record an entry in the execution manifest}
 \usage{
-gh_manifest(config, paso, estado, tiempo = NULL, msg = NULL)
+gh_manifest(config, step, status, time = NULL, msg = NULL)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{paso}{Nombre del paso registrado.}
+\item{step}{[EN] Name of the recorded step.\cr
+[ESP] Nombre del paso registrado.}
 
-\item{estado}{\code{"ok"}, \code{"error"} o \code{"omitido"}.}
+\item{status}{[EN] \code{"ok"}, \code{"error"} or \code{"omitido"}.\cr
+[ESP] \code{"ok"}, \code{"error"} o \code{"omitido"}.}
 
-\item{tiempo}{Duracion en segundos (numeric). Puede ser \code{NULL}.}
+\item{time}{[EN] Duration in seconds (numeric). Can be \code{NULL}.\cr
+[ESP] Duracion en segundos (numeric). Puede ser \code{NULL}.}
 
-\item{msg}{Mensaje adicional opcional.}
+\item{msg}{[EN] Optional additional message.\cr
+[ESP] Mensaje adicional opcional.}
 }
 \value{
-Invisible \code{NULL}.
+[EN] Invisible \code{NULL}.\cr
+[ESP] Invisible \code{NULL}.
 }
 \description{
-Añade una linea al manifest YAML de la ejecucion actual con el nombre del
-paso, estado, tiempo y mensaje opcional. El manifest se guarda en
+[EN] Appends a line to the YAML manifest of the current execution with
+the step name, status, time and optional message. The manifest is saved at
+\code{outputs/{run_id}/global/parametros/manifest.yaml}.
+}
+\details{
+[ESP] Añade una linea al manifest YAML de la ejecucion actual con el
+nombre del paso, estado, tiempo y mensaje opcional. El manifest se guarda en
 \code{outputs/{run_id}/global/parametros/manifest.yaml}.
 }
 \examples{
 \dontrun{
 config <- load_config()
-gh_manifest(config, "network_genes", "ok", tiempo = 1.2)
+gh_manifest(config, "network_genes", "ok", time = 1.2)
 gh_manifest(config, "analysis_latent", "omitido")
 }
 }

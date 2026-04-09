@@ -2,20 +2,27 @@
 % Please edit documentation in R/data_validate.R
 \name{validate_expression}
 \alias{validate_expression}
-\title{Validar dataset de expresion genica}
+\title{Validate gene expression dataset}
 \usage{
 validate_expression(config, dt)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} devuelto por \code{\link[=read_expression]{read_expression()}}.}
+\item{dt}{[EN] \code{data.table} returned by \code{\link[=read_expression]{read_expression()}}.\cr
+[ESP] \code{data.table} devuelto por \code{\link[=read_expression]{read_expression()}}.}
 }
 \value{
-\code{dt} sin modificaciones.
+[EN] \code{dt} unmodified.\cr
+[ESP] \code{dt} sin modificaciones.
 }
 \description{
-Comprueba columnas, patron Ensembl, valores de rna_value y rna_level.
+[EN] Checks columns, Ensembl pattern, rna_value values and rna_level.
+}
+\details{
+[ESP] Comprueba columnas, patron Ensembl, valores de rna_value y
+rna_level.
 }
 \examples{
 \dontrun{

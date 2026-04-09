@@ -2,22 +2,30 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_set}
 \alias{cache_set}
-\title{Guardar un objeto en cache}
+\title{Save an object to cache}
 \usage{
 cache_set(config, key, object)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{key}{Clave de cache.}
+\item{key}{[EN] Cache key.\cr
+[ESP] Clave de cache.}
 
-\item{object}{Objeto R a almacenar.}
+\item{object}{[EN] R object to store.\cr
+[ESP] Objeto R a almacenar.}
 }
 \value{
-Invisible \code{NULL}.
+[EN] Invisible \code{NULL}.\cr
+[ESP] Invisible \code{NULL}.
 }
 \description{
-Almacena \code{object} en disco bajo la clave \code{key}. Si el cache esta
+[EN] Stores \code{object} on disk under \code{key}. If the cache is disabled in
+config, the call has no effect.
+}
+\details{
+[ESP] Almacena \code{object} en disco bajo la clave \code{key}. Si el cache esta
 desactivado en config, la llamada no tiene efecto.
 }
 \examples{

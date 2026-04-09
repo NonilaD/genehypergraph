@@ -2,15 +2,19 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_tic}
 \alias{gh_tic}
-\title{Iniciar un cronometro}
+\title{Start a stopwatch}
 \usage{
 gh_tic()
 }
 \value{
-Objeto \code{proc_time} con el tiempo actual.
+[EN] \code{proc_time} object with the current time.\cr
+[ESP] Objeto \code{proc_time} con el tiempo actual.
 }
 \description{
-Devuelve el tiempo de inicio para usarlo con \code{\link[=gh_toc]{gh_toc()}}.
+[EN] Returns the start time for use with \code{\link[=gh_toc]{gh_toc()}}.
+}
+\details{
+[ESP] Devuelve el tiempo de inicio para usarlo con \code{\link[=gh_toc]{gh_toc()}}.
 }
 \examples{
 t0 <- gh_tic()

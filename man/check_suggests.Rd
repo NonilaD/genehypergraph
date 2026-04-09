@@ -2,22 +2,32 @@
 % Please edit documentation in R/core_utils.R
 \name{check_suggests}
 \alias{check_suggests}
-\title{Comprobar si un paquete de Suggests esta disponible}
+\title{Check if a Suggests package is available}
 \usage{
-check_suggests(pkg, modulo)
+check_suggests(pkg, module)
 }
 \arguments{
-\item{pkg}{Nombre del paquete.}
+\item{pkg}{[EN] Package name.\cr
+[ESP] Nombre del paquete.}
 
-\item{modulo}{Nombre del modulo que lo necesita (para el mensaje).}
+\item{module}{[EN] Name of the module that requires it (for the
+message).\cr
+[ESP] Nombre del modulo que lo necesita (para el mensaje).}
 }
 \value{
-\code{TRUE} si el paquete esta disponible, \code{FALSE} en caso contrario
+[EN] \code{TRUE} if the package is available, \code{FALSE} otherwise (with
+an informative \code{message()}).\cr
+[ESP] \code{TRUE} si el paquete esta disponible, \code{FALSE} en caso contrario
 (con un \code{message()} informativo).
 }
 \description{
-Emite un mensaje claro si el paquete no esta instalado, en lugar de un
-error crипtico. Util para modulos que dependen de Bioconductor o paquetes
+[EN] Emits a clear message if the package is not installed, instead of a
+cryptic error. Useful for modules that depend on Bioconductor or optional
+packages.
+}
+\details{
+[ESP] Emite un mensaje claro si el paquete no esta instalado, en lugar de
+un error criptico. Util para modulos que dependen de Bioconductor o paquetes
 opcionales.
 }
 \examples{

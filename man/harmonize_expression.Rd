@@ -2,23 +2,31 @@
 % Please edit documentation in R/data_harmonize.R
 \name{harmonize_expression}
 \alias{harmonize_expression}
-\title{Filtrar y normalizar datos de expresion genica}
+\title{Filter and normalise gene expression data}
 \usage{
 harmonize_expression(config, dt, genes)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} validado de expresion.}
+\item{dt}{[EN] Validated expression \code{data.table}.\cr
+[ESP] \code{data.table} validado de expresion.}
 
-\item{genes}{\code{data.table} armonizado de genes.}
+\item{genes}{[EN] Harmonised gene \code{data.table}.\cr
+[ESP] \code{data.table} armonizado de genes.}
 }
 \value{
-\code{data.table} filtrado.
+[EN] Filtered \code{data.table}.\cr
+[ESP] \code{data.table} filtrado.
 }
 \description{
-Filtra por nivel de expresion minimo (rna_level) y por genes
-en lista de referencia.
+[EN] Filters by minimum expression level (rna_level) and by genes in the
+reference list.
+}
+\details{
+[ESP] Filtra por nivel de expresion minimo (rna_level) y por genes en
+lista de referencia.
 }
 \examples{
 \dontrun{

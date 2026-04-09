@@ -2,21 +2,29 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_exists}
 \alias{cache_exists}
-\title{Comprobar si existe una entrada valida en cache}
+\title{Check if a valid cache entry exists}
 \usage{
 cache_exists(config, key)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{key}{Clave de cache, generada con \code{\link[=cache_key]{cache_key()}} o cadena libre.}
+\item{key}{[EN] Cache key, generated with \code{\link[=cache_key]{cache_key()}} or a free
+string.\cr
+[ESP] Clave de cache, generada con \code{\link[=cache_key]{cache_key()}} o cadena libre.}
 }
 \value{
-Logico.
+[EN] Logical.\cr
+[ESP] Logico.
 }
 \description{
-Devuelve \code{TRUE} si el archivo de cache correspondiente a \code{key} existe en
-disco. No valida el contenido del archivo.
+[EN] Returns \code{TRUE} if the cache file corresponding to \code{key} exists on
+disk. Does not validate the file contents.
+}
+\details{
+[ESP] Devuelve \code{TRUE} si el archivo de cache correspondiente a \code{key}
+existe en disco. No valida el contenido del archivo.
 }
 \examples{
 config <- load_config()

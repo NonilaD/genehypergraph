@@ -2,20 +2,27 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_invalidate}
 \alias{cache_invalidate}
-\title{Eliminar una entrada del cache}
+\title{Invalidate a cache entry}
 \usage{
 cache_invalidate(config, key)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{key}{Clave de cache.}
+\item{key}{[EN] Cache key.\cr
+[ESP] Clave de cache.}
 }
 \value{
-Invisible logico: \code{TRUE} si se elimino, \code{FALSE} si no existia.
+[EN] Invisible logical: \code{TRUE} if deleted, \code{FALSE} if it did not
+exist.\cr
+[ESP] Invisible logico: \code{TRUE} si se elimino, \code{FALSE} si no existia.
 }
 \description{
-Borra el archivo de cache correspondiente a \code{key} si existe.
+[EN] Deletes the cache file corresponding to \code{key} if it exists.
+}
+\details{
+[ESP] Borra el archivo de cache correspondiente a \code{key} si existe.
 }
 \examples{
 \dontrun{

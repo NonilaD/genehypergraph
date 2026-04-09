@@ -2,20 +2,27 @@
 % Please edit documentation in R/data_validate.R
 \name{validate_gwas_common}
 \alias{validate_gwas_common}
-\title{Validar dataset GWAS variantes comunes}
+\title{Validate common variant GWAS dataset}
 \usage{
 validate_gwas_common(config, dt)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} devuelto por \code{\link[=read_gwas_common]{read_gwas_common()}}.}
+\item{dt}{[EN] \code{data.table} returned by \code{\link[=read_gwas_common]{read_gwas_common()}}.\cr
+[ESP] \code{data.table} devuelto por \code{\link[=read_gwas_common]{read_gwas_common()}}.}
 }
 \value{
-\code{dt} sin modificaciones.
+[EN] \code{dt} unmodified.\cr
+[ESP] \code{dt} sin modificaciones.
 }
 \description{
-Comprueba columnas, patron Ensembl, rango de score y cobertura de enfermedades.
+[EN] Checks columns, Ensembl pattern, score range and disease coverage.
+}
+\details{
+[ESP] Comprueba columnas, patron Ensembl, rango de score y cobertura de
+enfermedades.
 }
 \examples{
 \dontrun{

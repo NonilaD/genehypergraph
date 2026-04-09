@@ -2,21 +2,28 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_get}
 \alias{cache_get}
-\title{Recuperar un objeto desde cache}
+\title{Retrieve an object from cache}
 \usage{
 cache_get(config, key)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{key}{Clave de cache.}
+\item{key}{[EN] Cache key.\cr
+[ESP] Clave de cache.}
 }
 \value{
-El objeto cacheado, o \code{NULL} si no existe.
+[EN] The cached object, or \code{NULL} if it does not exist.\cr
+[ESP] El objeto cacheado, o \code{NULL} si no existe.
 }
 \description{
-Lee y devuelve el objeto almacenado bajo \code{key}. Devuelve \code{NULL} si la
-entrada no existe o si el cache esta desactivado.
+[EN] Reads and returns the object stored under \code{key}. Returns \code{NULL} if
+the entry does not exist or the cache is disabled.
+}
+\details{
+[ESP] Lee y devuelve el objeto almacenado bajo \code{key}. Devuelve \code{NULL} si
+la entrada no existe o si el cache esta desactivado.
 }
 \examples{
 \dontrun{

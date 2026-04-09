@@ -2,27 +2,37 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_log}
 \alias{gh_log}
-\title{Emitir un mensaje de log}
+\title{Emit a log message}
 \usage{
-gh_log(config, nivel, ...)
+gh_log(config, level, ...)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{nivel}{Nivel del mensaje: \code{"DEBUG"}, \code{"INFO"}, \code{"WARN"} o \code{"ERROR"}.}
+\item{level}{[EN] Message level: \code{"DEBUG"}, \code{"INFO"}, \code{"WARN"} or
+\code{"ERROR"}.\cr
+[ESP] Nivel del mensaje: \code{"DEBUG"}, \code{"INFO"}, \code{"WARN"} o \code{"ERROR"}.}
 
-\item{...}{Fragmentos del mensaje, concatenados sin separador.}
+\item{...}{[EN] Message fragments, concatenated without separator.\cr
+[ESP] Fragmentos del mensaje, concatenados sin separador.}
 }
 \value{
-Invisible \code{NULL}.
+[EN] Invisible \code{NULL}.\cr
+[ESP] Invisible \code{NULL}.
 }
 \description{
-Escribe un mensaje en consola y, si esta configurado, en el archivo de log.
-El mensaje solo se emite si su nivel es >= al nivel configurado en
+[EN] Writes a message to the console and, if configured, to the log file.
+The message is only emitted if its level is >= the level configured in
+\code{config$logging$nivel}.
+}
+\details{
+[ESP] Escribe un mensaje en consola y, si esta configurado, en el archivo
+de log. El mensaje solo se emite si su nivel es >= al nivel configurado en
 \code{config$logging$nivel}.
 }
 \examples{
 config <- load_config()
-gh_log(config, "INFO", "Pipeline iniciado.")
-gh_log(config, "WARN", "Trait descartado: ", "EFO_0001645")
+gh_log(config, "INFO", "Pipeline started.")
+gh_log(config, "WARN", "Trait discarded: ", "EFO_0001645")
 }

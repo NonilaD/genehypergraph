@@ -2,21 +2,29 @@
 % Please edit documentation in R/data_io.R
 \name{read_diseases}
 \alias{read_diseases}
-\title{Leer ontologia de enfermedades desde Parquet}
+\title{Read disease ontology from Parquet}
 \usage{
 read_diseases(config)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-\code{data.table} con columnas:
+[EN] \code{data.table} with columns:
+\code{id}, \code{name}, \code{description}, \code{therapeuticAreas},
+\code{parents}, \code{ancestors}, \code{children}, \code{synonyms}.\cr
+[ESP] \code{data.table} con columnas:
 \code{id}, \code{name}, \code{description}, \code{therapeuticAreas},
 \code{parents}, \code{ancestors}, \code{children}, \code{synonyms}.
 }
 \description{
-Lee el dataset de enfermedades de Open Targets (EFO/MONDO/DOID)
-y devuelve las columnas de ontologia como \code{data.table}.
+[EN] Reads the Open Targets disease dataset (EFO/MONDO/DOID) and returns
+the ontology columns as a \code{data.table}.
+}
+\details{
+[ESP] Lee el dataset de enfermedades de Open Targets (EFO/MONDO/DOID) y
+devuelve las columnas de ontologia como \code{data.table}.
 }
 \examples{
 \dontrun{

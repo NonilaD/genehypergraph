@@ -2,20 +2,28 @@
 % Please edit documentation in R/data_validate.R
 \name{validate_gwas_rare}
 \alias{validate_gwas_rare}
-\title{Validar dataset GWAS variantes raras}
+\title{Validate rare variant GWAS dataset}
 \usage{
 validate_gwas_rare(config, dt)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} devuelto por \code{\link[=read_gwas_rare]{read_gwas_rare()}}.}
+\item{dt}{[EN] \code{data.table} returned by \code{\link[=read_gwas_rare]{read_gwas_rare()}}.\cr
+[ESP] \code{data.table} devuelto por \code{\link[=read_gwas_rare]{read_gwas_rare()}}.}
 }
 \value{
-\code{dt} sin modificaciones.
+[EN] \code{dt} unmodified.\cr
+[ESP] \code{dt} sin modificaciones.
 }
 \description{
-Comprueba columnas, patron Ensembl, rango de score y significancia clinica.
+[EN] Checks columns, Ensembl pattern, score range and clinical
+significance.
+}
+\details{
+[ESP] Comprueba columnas, patron Ensembl, rango de score y significancia
+clinica.
 }
 \examples{
 \dontrun{

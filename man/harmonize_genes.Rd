@@ -2,21 +2,28 @@
 % Please edit documentation in R/data_harmonize.R
 \name{harmonize_genes}
 \alias{harmonize_genes}
-\title{Filtrar genes protein-coding}
+\title{Filter protein-coding genes}
 \usage{
 harmonize_genes(config, dt)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} validado de genes.}
+\item{dt}{[EN] Validated gene \code{data.table}.\cr
+[ESP] \code{data.table} validado de genes.}
 }
 \value{
-\code{data.table} filtrado con genes protein-coding unicos.
+[EN] Filtered \code{data.table} with unique protein-coding genes.\cr
+[ESP] \code{data.table} filtrado con genes protein-coding unicos.
 }
 \description{
-Retiene unicamente genes con \code{biotype == "protein_coding"} y
-elimina duplicados por \code{id}.
+[EN] Retains only genes with \code{biotype == "protein_coding"} and removes
+duplicates by \code{id}.
+}
+\details{
+[ESP] Retiene unicamente genes con \code{biotype == "protein_coding"} y elimina
+duplicados por \code{id}.
 }
 \examples{
 \dontrun{

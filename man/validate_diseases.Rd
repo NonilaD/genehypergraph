@@ -2,20 +2,26 @@
 % Please edit documentation in R/data_validate.R
 \name{validate_diseases}
 \alias{validate_diseases}
-\title{Validar ontologia de enfermedades}
+\title{Validate disease ontology}
 \usage{
 validate_diseases(config, dt)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} devuelto por \code{\link[=read_diseases]{read_diseases()}}.}
+\item{dt}{[EN] \code{data.table} returned by \code{\link[=read_diseases]{read_diseases()}}.\cr
+[ESP] \code{data.table} devuelto por \code{\link[=read_diseases]{read_diseases()}}.}
 }
 \value{
-\code{dt} sin modificaciones.
+[EN] \code{dt} unmodified.\cr
+[ESP] \code{dt} sin modificaciones.
 }
 \description{
-Comprueba columnas y que id y name no tengan NAs.
+[EN] Checks columns and that id and name have no NAs.
+}
+\details{
+[ESP] Comprueba columnas y que id y name no tengan NAs.
 }
 \examples{
 \dontrun{

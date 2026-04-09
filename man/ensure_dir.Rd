@@ -2,18 +2,25 @@
 % Please edit documentation in R/core_utils.R
 \name{ensure_dir}
 \alias{ensure_dir}
-\title{Crear directorio si no existe}
+\title{Create a directory if it does not exist}
 \usage{
 ensure_dir(path)
 }
 \arguments{
-\item{path}{Ruta del directorio a crear.}
+\item{path}{[EN] Directory path to create.\cr
+[ESP] Ruta del directorio a crear.}
 }
 \value{
-Invisible \code{path}.
+[EN] Invisible \code{path}.\cr
+[ESP] Invisible \code{path}.
 }
 \description{
-Crea la ruta completa (equivalente a \code{mkdir -p}) sin error si ya existe.
+[EN] Creates the full path (equivalent to \code{mkdir -p}) without error if it
+already exists.
+}
+\details{
+[ESP] Crea la ruta completa (equivalente a \code{mkdir -p}) sin error si ya
+existe.
 }
 \examples{
 \dontrun{

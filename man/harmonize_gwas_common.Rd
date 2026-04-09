@@ -2,23 +2,31 @@
 % Please edit documentation in R/data_harmonize.R
 \name{harmonize_gwas_common}
 \alias{harmonize_gwas_common}
-\title{Filtrar y normalizar GWAS variantes comunes}
+\title{Filter and normalise common variant GWAS}
 \usage{
 harmonize_gwas_common(config, dt, genes)
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{dt}{\code{data.table} validado de gwas_comun.}
+\item{dt}{[EN] Validated gwas_comun \code{data.table}.\cr
+[ESP] \code{data.table} validado de gwas_comun.}
 
-\item{genes}{\code{data.table} armonizado de genes.}
+\item{genes}{[EN] Harmonised gene \code{data.table}.\cr
+[ESP] \code{data.table} armonizado de genes.}
 }
 \value{
-\code{data.table} filtrado.
+[EN] Filtered \code{data.table}.\cr
+[ESP] \code{data.table} filtrado.
 }
 \description{
-Filtra por score minimo, retiene solo genes en lista de referencia
-y elimina filas sin diseaseId.
+[EN] Filters by minimum score, retains only genes in the reference list
+and removes rows without diseaseId.
+}
+\details{
+[ESP] Filtra por score minimo, retiene solo genes en lista de referencia y
+elimina filas sin diseaseId.
 }
 \examples{
 \dontrun{

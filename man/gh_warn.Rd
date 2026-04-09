@@ -2,19 +2,24 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_warn}
 \alias{gh_warn}
-\title{Mensaje de advertencia del pipeline}
+\title{Pipeline warning message}
 \usage{
 gh_warn(msg)
 }
 \arguments{
-\item{msg}{Texto del aviso.}
+\item{msg}{[EN] Warning text.\cr
+[ESP] Texto del aviso.}
 }
 \value{
-Invisible \code{NULL}.
+[EN] Invisible \code{NULL}.\cr
+[ESP] Invisible \code{NULL}.
 }
 \description{
-Mensaje de advertencia del pipeline
+[EN] Emits a warning alert via cli.
+}
+\details{
+[ESP] Emite una alerta de aviso via cli.
 }
 \examples{
-gh_warn("3 traits descartados por tener menos de 2 genes.")
+gh_warn("3 traits discarded for having fewer than 2 genes.")
 }

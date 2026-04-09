@@ -2,18 +2,24 @@
 % Please edit documentation in R/core_utils.R
 \name{gh_set_seed}
 \alias{gh_set_seed}
-\title{Fijar la semilla aleatoria desde la configuracion}
+\title{Set the random seed from configuration}
 \usage{
 gh_set_seed(config)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 }
 \value{
-Invisible \code{NULL}.
+[EN] Invisible \code{NULL}.\cr
+[ESP] Invisible \code{NULL}.
 }
 \description{
-Aplica \code{set.seed()} con el valor de \code{config$ejecucion$semilla} para
+[EN] Applies \code{set.seed()} with the value from \code{config$ejecucion$semilla}
+to guarantee reproducibility in permutations, UMAP, clustering, etc.
+}
+\details{
+[ESP] Aplica \code{set.seed()} con el valor de \code{config$ejecucion$semilla} para
 garantizar reproducibilidad en permutaciones, UMAP, clustering, etc.
 }
 \examples{

@@ -2,31 +2,43 @@
 % Please edit documentation in R/core_config.R
 \name{resolve_trait_path}
 \alias{resolve_trait_path}
-\title{Resolver placeholders de trait y capa en una ruta de output}
+\title{Resolve trait and layer placeholders in an output path}
 \usage{
-resolve_trait_path(path, trait_id, trait_name, capa = NULL)
+resolve_trait_path(path, trait_id, trait_name, layer = NULL)
 }
 \arguments{
-\item{path}{Cadena con la ruta a resolver (normalmente obtenida con
+\item{path}{[EN] String with the path to resolve (normally obtained with
+\code{\link[=get_config]{get_config()}}).\cr
+[ESP] Cadena con la ruta a resolver (normalmente obtenida con
 \code{\link[=get_config]{get_config()}}).}
 
-\item{trait_id}{ID EFO/MONDO del trait, p. ej. \code{"EFO_0001645"}.}
+\item{trait_id}{[EN] EFO/MONDO ID of the trait, e.g. \code{"EFO_0001645"}.\cr
+[ESP] ID EFO/MONDO del trait, p. ej. \code{"EFO_0001645"}.}
 
-\item{trait_name}{Nombre legible del trait, p. ej. \code{"alzheimer"}.}
+\item{trait_name}{[EN] Human-readable trait name, e.g. \code{"alzheimer"}.\cr
+[ESP] Nombre legible del trait, p. ej. \code{"alzheimer"}.}
 
-\item{capa}{Nombre de la capa, p. ej. \code{"gwas_comun"} o \code{"integracion"}.
-Si es \code{NULL} no se resuelve \code{{capa}}.}
+\item{layer}{[EN] Layer name, e.g. \code{"gwas_comun"} or \code{"integracion"}. If
+\code{NULL} the \code{{capa}} placeholder is not resolved.\cr
+[ESP] Nombre de la capa, p. ej. \code{"gwas_comun"} o \code{"integracion"}. Si es
+\code{NULL} no se resuelve \code{{capa}}.}
 }
 \value{
-La ruta con los placeholders sustituidos.
+[EN] The path with placeholders substituted.\cr
+[ESP] La ruta con los placeholders sustituidos.
 }
 \description{
-Sustituye \code{{trait_id}}, \code{{trait_name}} y \code{{capa}} en las rutas de output
-que los contengan. Se llama en tiempo de ejecución para cada trait,
-después de \code{\link[=load_config]{load_config()}}.
+[EN] Substitutes \code{{trait_id}}, \code{{trait_name}} and \code{{capa}} in output
+paths that contain them. Called at execution time for each trait, after
+\code{\link[=load_config]{load_config()}}.
+}
+\details{
+[ESP] Sustituye \code{{trait_id}}, \code{{trait_name}} y \code{{capa}} en las rutas de
+output que los contengan. Se llama en tiempo de ejecucion para cada trait,
+despues de \code{\link[=load_config]{load_config()}}.
 }
 \examples{
 config <- load_config()
-ruta <- get_config(config, "rutas.outputs.visualizacion")
+ruta <- get_config(config, "rutas.outputs.viz_trait")
 resolve_trait_path(ruta, "EFO_0001645", "alzheimer", "gwas_comun")
 }

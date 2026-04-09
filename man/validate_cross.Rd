@@ -2,47 +2,60 @@
 % Please edit documentation in R/data_validate.R
 \name{validate_cross}
 \alias{validate_cross}
-\title{Validar integridad cruzada entre datasets}
+\title{Validate cross-dataset integrity}
 \usage{
 validate_cross(
   config,
   genes,
-  interactoma,
-  gwas_comun,
-  gwas_rara,
-  expresion,
-  enfermedades
+  interactome,
+  gwas_common,
+  gwas_rare,
+  expression,
+  diseases
 )
 }
 \arguments{
-\item{config}{Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list created by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion creada por \code{\link[=load_config]{load_config()}}.}
 
-\item{genes}{\code{data.table} de genes validado.}
+\item{genes}{[EN] Validated gene \code{data.table}.\cr
+[ESP] \code{data.table} de genes validado.}
 
-\item{interactoma}{\code{data.table} de interactoma validado.}
+\item{interactome}{[EN] Validated interactome \code{data.table}.\cr
+[ESP] \code{data.table} de interactoma validado.}
 
-\item{gwas_comun}{\code{data.table} GWAS comun validado.}
+\item{gwas_common}{[EN] Validated common GWAS \code{data.table}.\cr
+[ESP] \code{data.table} GWAS comun validado.}
 
-\item{gwas_rara}{\code{data.table} GWAS raro validado.}
+\item{gwas_rare}{[EN] Validated rare GWAS \code{data.table}.\cr
+[ESP] \code{data.table} GWAS raro validado.}
 
-\item{expresion}{\code{data.table} de expresion validado.}
+\item{expression}{[EN] Validated expression \code{data.table}.\cr
+[ESP] \code{data.table} de expresion validado.}
 
-\item{enfermedades}{\code{data.table} de enfermedades validado.}
+\item{diseases}{[EN] Validated disease \code{data.table}.\cr
+[ESP] \code{data.table} de enfermedades validado.}
 }
 \value{
-Lista con porcentajes de cobertura entre datasets.
+[EN] List with coverage percentages between datasets.\cr
+[ESP] Lista con porcentajes de cobertura entre datasets.
 }
 \description{
-Comprueba la cobertura entre datasets: genes en interactoma,
-genes GWAS en lista de genes, enfermedades GWAS en ontologia,
-y genes de expresion en lista de genes.
+[EN] Checks coverage between datasets: genes in interactome, GWAS genes in
+the gene list, GWAS diseases in the ontology, and expression genes in the
+gene list.
+}
+\details{
+[ESP] Comprueba la cobertura entre datasets: genes en interactoma, genes
+GWAS en lista de genes, enfermedades GWAS en ontologia, y genes de expresion
+en lista de genes.
 }
 \examples{
 \dontrun{
 config <- load_config()
 cov    <- validate_cross(
   config,
-  read_genes(config),        read_interactoma(config),
+  read_genes(config),        read_interactome(config),
   read_gwas_common(config),  read_gwas_rare(config),
   read_expression(config),   read_diseases(config)
 )

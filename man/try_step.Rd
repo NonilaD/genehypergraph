@@ -2,25 +2,40 @@
 % Please edit documentation in R/core_utils.R
 \name{try_step}
 \alias{try_step}
-\title{Ejecutar un paso del pipeline con politica de errores}
+\title{Execute a pipeline step with error policy}
 \usage{
-try_step(config, paso, expr)
+try_step(config, step, expr)
 }
 \arguments{
-\item{config}{Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
+\item{config}{[EN] Configuration list returned by \code{\link[=load_config]{load_config()}}.\cr
+[ESP] Lista de configuracion devuelta por \code{\link[=load_config]{load_config()}}.}
 
-\item{paso}{Nombre descriptivo del paso (para el mensaje de error).}
+\item{step}{[EN] Descriptive name of the step (used in the error
+message).\cr
+[ESP] Nombre descriptivo del paso (para el mensaje de error).}
 
-\item{expr}{Expresion a evaluar (se pasa sin comillas, como en
-\code{tryCatch}).}
+\item{expr}{[EN] Expression to evaluate (passed unquoted, as in
+\code{tryCatch}).\cr
+[ESP] Expresion a evaluar (se pasa sin comillas, como en \code{tryCatch}).}
 }
 \value{
-El resultado de \code{expr}, o \code{NULL} si se capturo un error y la
+[EN] The result of \code{expr}, or \code{NULL} if an error was captured and
+the policy is not \code{"parar"}.\cr
+[ESP] El resultado de \code{expr}, o \code{NULL} si se capturo un error y la
 politica no es \code{"parar"}.
 }
 \description{
-Envuelve la ejecucion de una funcion aplicando la politica definida en
+[EN] Wraps the execution of a function applying the policy defined in
 \code{config$errores$politica}:
+\itemize{
+\item \code{"parar"}: propagates the error (R default behaviour).
+\item \code{"continuar_trait"}: captures the error, logs it and returns \code{NULL}.
+\item \code{"continuar_run"}: same as \code{continuar_trait}.
+}
+}
+\details{
+[ESP] Envuelve la ejecucion de una funcion aplicando la politica definida
+en \code{config$errores$politica}:
 \itemize{
 \item \code{"parar"}: propaga el error (comportamiento por defecto de R).
 \item \code{"continuar_trait"}: captura el error, lo registra y devuelve \code{NULL}.
@@ -29,7 +44,7 @@ Envuelve la ejecucion de una funcion aplicando la politica definida en
 }
 \examples{
 config <- load_config()
-result <- try_step(config, "carga de genes", {
+result <- try_step(config, "gene loading", {
   1 + 1
 })
 }
