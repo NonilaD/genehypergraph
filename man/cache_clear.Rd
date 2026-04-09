@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_cache.R
 \name{cache_clear}
 \alias{cache_clear}
-\title{Clear the entire execution cache}
+\title{Clear the entire shared cache}
 \usage{
 cache_clear(config)
 }
@@ -15,12 +15,14 @@ cache_clear(config)
 [ESP] Invisible numero de archivos eliminados.
 }
 \description{
-[EN] Deletes all files in the cache folder defined in
-\code{rutas.outputs.cache}. Does not delete the folder itself.
+[EN] Deletes all \code{.rds} and \code{.qs2} files in the shared cache directory
+(resolved via \code{rutas.cache_global}, or the fallback path derived from
+\code{rutas.outputs.cache}). Does not delete the directory itself.
 }
 \details{
-[ESP] Elimina todos los archivos de la carpeta de cache definida en
-\code{rutas.outputs.cache}. No elimina la carpeta en si.
+[ESP] Elimina todos los archivos \code{.rds} y \code{.qs2} del directorio de cache
+compartido (resuelto via \code{rutas.cache_global}, o la ruta de fallback
+derivada de \code{rutas.outputs.cache}). No elimina el directorio en si.
 }
 \examples{
 \dontrun{

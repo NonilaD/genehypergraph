@@ -22,11 +22,12 @@ cache_set(config, key, object)
 }
 \description{
 [EN] Stores \code{object} on disk under \code{key}. If the cache is disabled in
-config, the call has no effect.
+config, the call has no effect. Emits a \code{DEBUG} log message after writing.
 }
 \details{
 [ESP] Almacena \code{object} en disco bajo la clave \code{key}. Si el cache esta
-desactivado en config, la llamada no tiene efecto.
+desactivado en config, la llamada no tiene efecto. Emite un mensaje de log
+\code{DEBUG} tras la escritura.
 }
 \examples{
 \dontrun{

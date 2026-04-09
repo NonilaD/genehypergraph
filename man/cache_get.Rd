@@ -19,11 +19,13 @@ cache_get(config, key)
 }
 \description{
 [EN] Reads and returns the object stored under \code{key}. Returns \code{NULL} if
-the entry does not exist or the cache is disabled.
+the entry does not exist, has expired, or the cache is disabled. Emits a
+\code{DEBUG} log message on hit and on miss.
 }
 \details{
 [ESP] Lee y devuelve el objeto almacenado bajo \code{key}. Devuelve \code{NULL} si
-la entrada no existe o si el cache esta desactivado.
+la entrada no existe, ha expirado o el cache esta desactivado. Emite un
+mensaje de log \code{DEBUG} en caso de hit y de miss.
 }
 \examples{
 \dontrun{

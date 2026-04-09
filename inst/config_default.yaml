@@ -34,7 +34,8 @@ rutas:
     viz_trait:        "outputs/{run_id}/traits/{trait_id}__{trait_name}/06_visualizacion/{capa}"
     viz_global:       "outputs/{run_id}/global/visualizacion"
     logs:             "outputs/{run_id}/logs"
-    cache:            "outputs/cache"
+    cache:            "outputs/cache"   # legacy key — kept for fallback only
+  cache_global:       "outputs/cache_global"   # shared across all run_ids
 
 # =============================================================================
 # 4. Pipeline
@@ -269,9 +270,10 @@ export:
 # 19. Caché
 # =============================================================================
 cache:
-  activar: true
-  formato: "qs2"    # qs2 | rds
-  modo:    "hash"   # hash | timestamp
+  activar:      true
+  formato:      "qs2"    # qs2 | rds
+  modo:         "hash"   # hash | timestamp
+  max_age_days: null     # null = never expires; set e.g. 30 to expire after 30 days
 
 # =============================================================================
 # 20. Rendimiento

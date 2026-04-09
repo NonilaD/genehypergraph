@@ -20,11 +20,18 @@ string.\cr
 }
 \description{
 [EN] Returns \code{TRUE} if the cache file corresponding to \code{key} exists on
-disk. Does not validate the file contents.
+disk \strong{and} has not expired. A file is considered expired when
+\code{cache.max_age_days} is set in config and the file's modification time is
+older than that many days. When \code{cache.max_age_days} is absent the cache
+never expires. Returns \code{FALSE} if the cache is disabled.
 }
 \details{
 [ESP] Devuelve \code{TRUE} si el archivo de cache correspondiente a \code{key}
-existe en disco. No valida el contenido del archivo.
+existe en disco \strong{y} no ha expirado. Un archivo se considera expirado
+cuando \code{cache.max_age_days} esta definido en config y la fecha de
+modificacion del archivo es anterior a ese numero de dias. Si
+\code{cache.max_age_days} no existe, el cache nunca expira. Devuelve \code{FALSE} si
+el cache esta desactivado.
 }
 \examples{
 config <- load_config()
