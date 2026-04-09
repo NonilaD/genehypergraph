@@ -657,3 +657,411 @@ gh_manifest <- function(config, step, status, time = NULL, msg = NULL) {
 
   invisible(NULL)
 }
+
+# =============================================================================
+# 10. HELPERS AND VALIDATIONS
+# =============================================================================
+
+# Format a number with thousands separator — e.g. 19247 -> "19,247"
+#' @noRd
+.fmt_num <- function(n) {
+  formatC(as.integer(round(n)), format = "d", big.mark = ",")
+}
+
+#' Print trait processing start
+#'
+#' \[EN\] Prints a console line indicating that the pipeline has started
+#' processing a specific trait.
+#'
+#' \[ESP\] Imprime en consola que el pipeline empieza a procesar un trait
+#' concreto.
+#'
+#' @param trait_id \[EN\] EFO/MONDO identifier of the trait.\cr
+#'   \[ESP\] Identificador EFO/MONDO del trait.
+#' @param trait_name \[EN\] Human-readable trait name.\cr
+#'   \[ESP\] Nombre legible del trait.
+#' @param i \[EN\] Current trait index.\cr
+#'   \[ESP\] Indice del trait actual.
+#' @param n_total \[EN\] Total number of traits to process.\cr
+#'   \[ESP\] Total de traits a procesar.
+#'
+#' @return \[EN\] Invisible `NULL`.\cr
+#'   \[ESP\] Invisible `NULL`.
+#' @importFrom cli cli_text col_blue style_bold
+#' @export
+#'
+#' @examples
+#' gh_trait_start("EFO_0001645", "alzheimer", 12L, 844L)
+gh_trait_start <- function(trait_id, trait_name, i, n_total) {
+  cli::cli_text(
+    "  {cli::col_blue('\u25B6')} Trait {i}/{n_total} \u00B7 ",
+    "{cli::style_bold(trait_name)} ({trait_id})"
+  )
+  invisible(NULL)
+}
+
+#' Print trait processing result
+#'
+#' \[EN\] Prints the outcome of a processed trait together with its elapsed
+#' time.
+#'
+#' \[ESP\] Imprime en consola el resultado de un trait con el tiempo
+#' transcurrido.
+#'
+#' @param trait_name \[EN\] Human-readable trait name.\cr
+#'   \[ESP\] Nombre legible del trait.
+#' @param time \[EN\] Elapsed time in seconds.\cr
+#'   \[ESP\] Tiempo transcurrido en segundos.
+#' @param ok \[EN\] `TRUE` (default) shows a success symbol; `FALSE` shows an
+#'   error symbol.\cr
+#'   \[ESP\] `TRUE` (por defecto) muestra simbolo de exito; `FALSE` de error.
+#'
+#' @return \[EN\] Invisible `NULL`.\cr
+#'   \[ESP\] Invisible `NULL`.
+#' @importFrom cli cli_text col_green col_red symbol
+#' @export
+#'
+#' @examples
+#' gh_trait_done("alzheimer", time = 12.4)
+#' gh_trait_done("alzheimer", time = 3.1, ok = FALSE)
+gh_trait_done <- function(trait_name, time, ok = TRUE) {
+  sym   <- if (ok) cli::col_green(cli::symbol$tick) else cli::col_red(cli::symbol$cross)
+  t_str <- .fmt_time(time)
+  pad   <- strrep(" ", max(1L, 30L - nchar(trait_name)))
+  cli::cli_text("  {sym} {trait_name}{pad}done in {t_str}")
+  invisible(NULL)
+}
+
+#' Print that a pipeline step is skipped
+#'
+#' \[EN\] Prints a console line indicating that a step is disabled in the
+#' current configuration.
+#'
+#' \[ESP\] Imprime en consola que un paso esta desactivado en la configuracion
+#' actual.
+#'
+#' @param step \[EN\] Name of the skipped step.\cr
+#'   \[ESP\] Nombre del paso omitido.
+#'
+#' @return \[EN\] Invisible `NULL`.\cr
+#'   \[ESP\] Invisible `NULL`.
+#' @importFrom cli cli_text col_grey
+#' @export
+#'
+#' @examples
+#' gh_skip("analysis_latent")
+#' gh_skip("results_annotation")
+gh_skip <- function(step) {
+  pad <- strrep(" ", max(1L, 30L - nchar(step)))
+  cli::cli_text(
+    "  {cli::col_grey('\u2192')} {step}{pad}",
+    "{cli::col_grey('[skipped]  \u25CB')}"
+  )
+  invisible(NULL)
+}
+
+#' Assert that a data.table is non-empty
+#'
+#' \[EN\] Throws an informative `stop()` if `dt` is `NULL` or has zero rows.
+#'
+#' \[ESP\] Lanza un `stop()` informativo si `dt` es `NULL` o tiene cero filas.
+#'
+#' @param dt \[EN\] Object to check (expected to be a `data.table`).\cr
+#'   \[ESP\] Objeto a comprobar (se espera un `data.table`).
+#' @param name \[EN\] Dataset name used in the error message.\cr
+#'   \[ESP\] Nombre del dataset usado en el mensaje de error.
+#'
+#' @return \[EN\] Invisible `TRUE` if the check passes.\cr
+#'   \[ESP\] Invisible `TRUE` si la comprobacion pasa.
+#' @export
+#'
+#' @examples
+#' assert_non_empty(mtcars, "mtcars")
+assert_non_empty <- function(dt, name) {
+  if (is.null(dt) || nrow(dt) == 0L) {
+    stop("Dataset '", name, "' is NULL or has 0 rows.")
+  }
+  invisible(TRUE)
+}
+
+#' Assert that a file exists on disk
+#'
+#' \[EN\] Throws an informative `stop()` if the file at `path` does not exist.
+#'
+#' \[ESP\] Lanza un `stop()` informativo si el archivo en `path` no existe.
+#'
+#' @param path \[EN\] File path to check.\cr
+#'   \[ESP\] Ruta del archivo a comprobar.
+#'
+#' @return \[EN\] Invisible `TRUE` if the check passes.\cr
+#'   \[ESP\] Invisible `TRUE` si la comprobacion pasa.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' assert_file_exists("inputs/genes/part-0.parquet")
+#' }
+assert_file_exists <- function(path) {
+  if (!file.exists(path)) {
+    stop("File not found: ", path)
+  }
+  invisible(TRUE)
+}
+
+# =============================================================================
+# 11. SESSION SNAPSHOT
+# =============================================================================
+
+#' Save session information to disk
+#'
+#' \[EN\] Captures `sessionInfo()` and writes it to
+#' `outputs/{run_id}/global/parametros/session_info.txt` for reproducibility
+#' auditing.
+#'
+#' \[ESP\] Captura `sessionInfo()` y lo escribe en
+#' `outputs/{run_id}/global/parametros/session_info.txt` para auditoria de
+#' reproducibilidad.
+#'
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#'
+#' @return \[EN\] Invisible path to the written file, or `NULL` if the global
+#'   output directory is not configured.\cr
+#'   \[ESP\] Invisible ruta del archivo escrito, o `NULL` si el directorio de
+#'   output global no esta configurado.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' config <- load_config()
+#' gh_session_snapshot(config)
+#' }
+gh_session_snapshot <- function(config) {
+  global_dir <- get_config(config, "rutas.outputs.global")
+  if (is.null(global_dir)) return(invisible(NULL))
+
+  snap_dir  <- file.path(global_dir, "parametros")
+  snap_path <- file.path(snap_dir, "session_info.txt")
+  ensure_dir(snap_dir)
+
+  info <- utils::capture.output(utils::sessionInfo())
+  writeLines(info, snap_path)
+
+  invisible(snap_path)
+}
+
+# =============================================================================
+# 12. MOVING ETA
+# =============================================================================
+
+# Internal environment that stores the rolling window of per-trait durations
+.gh_eta_env <- new.env(parent = emptyenv())
+.gh_eta_env$times  <- numeric(0L)
+.gh_eta_env$window <- 10L
+
+#' Initialise the moving ETA tracker
+#'
+#' \[EN\] Resets the rolling window used to estimate time remaining. Call once
+#' before the trait loop, before the first [gh_progress_init()] call.
+#'
+#' \[ESP\] Reinicia la ventana deslizante usada para estimar el tiempo
+#' restante. Llamar una vez antes del bucle de traits, antes de
+#' [gh_progress_init()].
+#'
+#' @param window \[EN\] Number of most-recent traits used to compute the
+#'   rolling mean (default `10`).\cr
+#'   \[ESP\] Numero de traits recientes usados para calcular la media movil
+#'   (por defecto `10`).
+#'
+#' @return \[EN\] Invisible `NULL`.\cr
+#'   \[ESP\] Invisible `NULL`.
+#' @export
+#'
+#' @examples
+#' gh_eta_init()
+#' gh_eta_init(window = 5L)
+gh_eta_init <- function(window = 10L) {
+  .gh_eta_env$times  <- numeric(0L)
+  .gh_eta_env$window <- as.integer(window)
+  invisible(NULL)
+}
+
+#' Record the duration of a completed trait
+#'
+#' \[EN\] Appends `seconds` to the rolling window. Older values beyond
+#' `window` are dropped automatically. Call after each trait completes,
+#' before [gh_progress_tick()].
+#'
+#' \[ESP\] Añade `seconds` a la ventana deslizante. Los valores mas antiguos
+#' que superen `window` se descartan automaticamente. Llamar tras completar
+#' cada trait, antes de [gh_progress_tick()].
+#'
+#' @param seconds \[EN\] Elapsed time for the completed trait in seconds.\cr
+#'   \[ESP\] Tiempo transcurrido del trait completado en segundos.
+#'
+#' @return \[EN\] Invisible `NULL`.\cr
+#'   \[ESP\] Invisible `NULL`.
+#' @importFrom utils tail
+#' @export
+#'
+#' @examples
+#' gh_eta_init()
+#' gh_eta_record(4.2)
+#' gh_eta_record(3.8)
+gh_eta_record <- function(seconds) {
+  times <- c(.gh_eta_env$times, seconds)
+  w     <- .gh_eta_env$window
+  .gh_eta_env$times <- if (length(times) > w) tail(times, w) else times
+  invisible(NULL)
+}
+
+#' Get the current ETA estimate
+#'
+#' \[EN\] Returns the estimated remaining time in seconds, computed as the
+#' rolling mean of recorded durations multiplied by the number of remaining
+#' traits. Returns `NA_real_` if no durations have been recorded yet or
+#' `n_remaining` is zero.
+#'
+#' \[ESP\] Devuelve el tiempo restante estimado en segundos, calculado como
+#' la media movil de las duraciones registradas multiplicada por el numero de
+#' traits restantes. Devuelve `NA_real_` si aun no se han registrado
+#' duraciones o `n_remaining` es cero.
+#'
+#' @param n_remaining \[EN\] Number of traits still to process.\cr
+#'   \[ESP\] Numero de traits pendientes de procesar.
+#'
+#' @return \[EN\] Estimated seconds remaining (numeric), or `NA_real_`.\cr
+#'   \[ESP\] Segundos restantes estimados (numeric), o `NA_real_`.
+#' @export
+#'
+#' @examples
+#' gh_eta_init()
+#' gh_eta_record(4.0)
+#' gh_eta_record(5.0)
+#' gh_eta_get(100L)
+gh_eta_get <- function(n_remaining) {
+  times <- .gh_eta_env$times
+  if (length(times) == 0L || n_remaining <= 0L) return(NA_real_)
+  mean(times) * n_remaining
+}
+
+# =============================================================================
+# 13. CHECKPOINTS
+# =============================================================================
+
+#' Save a trait result to the run checkpoint
+#'
+#' \[EN\] Appends an entry for `trait_id` to
+#' `outputs/{run_id}/global/checkpoint.yaml`. If the file does not exist it
+#' is created. Enables resuming interrupted runs by skipping already-completed
+#' traits.
+#'
+#' \[ESP\] Añade una entrada para `trait_id` en
+#' `outputs/{run_id}/global/checkpoint.yaml`. Si el archivo no existe lo crea.
+#' Permite reanudar ejecuciones interrumpidas saltando los traits ya
+#' completados.
+#'
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#' @param trait_id \[EN\] EFO/MONDO identifier of the trait.\cr
+#'   \[ESP\] Identificador EFO/MONDO del trait.
+#' @param status \[EN\] `"ok"` or `"error"`.\cr
+#'   \[ESP\] `"ok"` o `"error"`.
+#' @param msg \[EN\] Optional message (e.g. error text).\cr
+#'   \[ESP\] Mensaje opcional (p.ej. texto del error).
+#'
+#' @return \[EN\] Invisible `NULL`.\cr
+#'   \[ESP\] Invisible `NULL`.
+#' @importFrom yaml read_yaml write_yaml
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' config <- load_config()
+#' gh_checkpoint_save(config, "EFO_0001645", "ok")
+#' gh_checkpoint_save(config, "EFO_0000182", "error", msg = "empty dataset")
+#' }
+gh_checkpoint_save <- function(config, trait_id, status, msg = NULL) {
+  global_dir <- get_config(config, "rutas.outputs.global")
+  if (is.null(global_dir)) return(invisible(NULL))
+
+  cp_path <- file.path(global_dir, "checkpoint.yaml")
+  ensure_dir(global_dir)
+
+  entry <- list(
+    trait_id  = trait_id,
+    status    = status,
+    timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S"),
+    msg       = msg
+  )
+
+  current <- if (file.exists(cp_path)) yaml::read_yaml(cp_path) else list()
+  current[[length(current) + 1L]] <- entry
+  yaml::write_yaml(current, cp_path)
+
+  invisible(NULL)
+}
+
+#' Load completed trait IDs from the run checkpoint
+#'
+#' \[EN\] Reads the checkpoint file of the current run and returns a character
+#' vector of trait IDs that completed with `status == "ok"`.
+#'
+#' \[ESP\] Lee el archivo de checkpoint de la ejecucion actual y devuelve un
+#' vector de character con los trait_id que completaron con `status == "ok"`.
+#'
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#'
+#' @return \[EN\] Character vector of completed trait IDs (empty if no
+#'   checkpoint exists).\cr
+#'   \[ESP\] Vector de character con los trait_id completados (vacio si no
+#'   existe checkpoint).
+#' @importFrom yaml read_yaml
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' config <- load_config()
+#' done   <- gh_checkpoint_load(config)
+#' }
+gh_checkpoint_load <- function(config) {
+  global_dir <- get_config(config, "rutas.outputs.global")
+  if (is.null(global_dir)) return(character(0L))
+
+  cp_path <- file.path(global_dir, "checkpoint.yaml")
+  if (!file.exists(cp_path)) return(character(0L))
+
+  entries <- yaml::read_yaml(cp_path)
+  ok      <- vapply(entries, function(e) isTRUE(e$status == "ok"), logical(1L))
+  vapply(entries[ok], function(e) e$trait_id, character(1L))
+}
+
+#' Check whether a trait is already done in the checkpoint
+#'
+#' \[EN\] Returns `TRUE` if `trait_id` is present in the checkpoint with
+#' `status == "ok"`. Convenience wrapper around [gh_checkpoint_load()].
+#'
+#' \[ESP\] Devuelve `TRUE` si `trait_id` esta en el checkpoint con
+#' `status == "ok"`. Wrapper conveniente sobre [gh_checkpoint_load()].
+#'
+#' @param config \[EN\] Configuration list returned by [load_config()].\cr
+#'   \[ESP\] Lista de configuracion devuelta por [load_config()].
+#' @param trait_id \[EN\] EFO/MONDO identifier of the trait.\cr
+#'   \[ESP\] Identificador EFO/MONDO del trait.
+#'
+#' @return \[EN\] `TRUE` if the trait is already completed, `FALSE`
+#'   otherwise.\cr
+#'   \[ESP\] `TRUE` si el trait ya esta completado, `FALSE` en caso contrario.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' config <- load_config()
+#' if (gh_checkpoint_is_done(config, "EFO_0001645")) {
+#'   message("Skipping already completed trait.")
+#' }
+#' }
+gh_checkpoint_is_done <- function(config, trait_id) {
+  trait_id %in% gh_checkpoint_load(config)
+}
